@@ -27,12 +27,6 @@ A Claude Code plugin providing Symfony-specific guidance, skills, workflows, and
 /plugin install superpowers-symfony@superpowers-symfony
 ```
 
-### From CLI
-
-```bash
-claude plugin install superpowers-symfony@superpowers-symfony
-```
-
 ### For your team (project-scoped)
 
 Add to your project's `.claude/settings.json`:
