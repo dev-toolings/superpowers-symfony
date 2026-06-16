@@ -56,9 +56,11 @@ get_symfony_version() {
   fi
 
   # Priority 2: composer.json require
+  # Anchor on the framework-bundle key so a minified (single-line) composer.json
+  # can't bleed another dependency's version into the match.
   if [[ -z "$version" && -f "$app_dir/composer.json" ]]; then
-    version=$(grep '"symfony/framework-bundle"' "$app_dir/composer.json" 2>/dev/null |
-      sed -E 's/.*"[\^~]?([0-9]+\.[0-9]+).*/\1/')
+    version=$(grep -oE '"symfony/framework-bundle"[[:space:]]*:[[:space:]]*"[v^~>=! ]*[0-9]+\.[0-9]+' "$app_dir/composer.json" 2>/dev/null |
+      head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
   fi
 
   echo "${version:-unknown}"
