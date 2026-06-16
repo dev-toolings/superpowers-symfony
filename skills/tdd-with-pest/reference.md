@@ -1,144 +1,198 @@
 # Reference
 
-# TDD with Pest PHP for Symfony
+# TDD with Pest PHP v4 for Symfony
+
+> **Version applicability** — This reference targets **Pest v4** (current, PHP **8.3+**).
+> Pest v3 required PHP 8.2; v4 raises the floor to 8.3 and adds **native browser testing**.
+>
+> ⚠️ **There is no official Symfony Pest plugin.** Pest is built on PHPUnit, so Symfony
+> integration is done by using the standard PHPUnit bridge test cases
+> (`KernelTestCase` / `WebTestCase`) **inside** Pest tests — not via a
+> `pestphp/pest-plugin-symfony` package (that package is not part of the Pest 4
+> ecosystem). Any code requiring such a plugin is wrong; use a bridge `TestCase` instead.
 
 ## Installation
 
 ```bash
+# If migrating from a plain PHPUnit setup:
+composer remove phpunit/phpunit
+
 composer require pestphp/pest --dev --with-all-dependencies
-composer require pestphp/pest-plugin-symfony --dev
 composer require zenstruck/foundry --dev
 
-# Initialize Pest
+# Initialize Pest — generates tests/Pest.php
 ./vendor/bin/pest --init
 ```
 
-## Test Execution
+Useful Pest 4 plugins:
+
+- **`pest-plugin-browser`** — native browser testing (Pest 4 feature).
+- **`pest-plugin-drift`** — auto-convert existing PHPUnit test classes to Pest syntax.
 
 ```bash
+composer require pestphp/pest-plugin-drift --dev   # one-time migration helper
+./vendor/bin/pest --drift                          # rewrite PHPUnit tests to Pest
+```
+
+## Wiring Symfony into Pest
+
+Bind the Symfony bridge `TestCase` classes to your test directories in `tests/Pest.php`.
+This is what replaces a (non-existent) Symfony plugin:
+
+```php
+<?php
+// tests/Pest.php
+
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
+
+// Service/integration tests use the kernel container
+uses(KernelTestCase::class, Factories::class, ResetDatabase::class)
+    ->in('Unit', 'Integration');
+
+// Functional/HTTP tests boot a client
+uses(WebTestCase::class, Factories::class, ResetDatabase::class)
+    ->in('Functional');
+```
+
+Inside a test, `$this` is the bound `TestCase`, so all PHPUnit/Symfony helpers
+(`static::getContainer()`, `static::createClient()`, `$this->assertSame(...)`) are available.
+
+> On PHPUnit 10+ / Foundry v2.9+ you can drop the `Factories`/`ResetDatabase` traits and
+> instead register `Zenstruck\Foundry\PHPUnit\FoundryExtension` + use the
+> `#[ResetDatabase]` attribute — but Pest classes are anonymous, so the trait-based
+> wiring above is the simplest path with Pest.
+
+## Test execution
+
+```bash
+# Host
+./vendor/bin/pest
+./vendor/bin/pest --parallel
+
 # Docker
 docker compose exec php ./vendor/bin/pest --parallel
-
-# Host
-./vendor/bin/pest --parallel
 
 # Single file
 ./vendor/bin/pest tests/Unit/Service/OrderServiceTest.php
 
-# With filter
+# Filter by description
 ./vendor/bin/pest --filter "creates order"
 
-# With coverage
+# Coverage gate
 ./vendor/bin/pest --coverage --min=80
 ```
 
-## RED Phase - Failure First
+## RED Phase — failure first
 
-Write tests before implementation. Use Foundry for factories.
+Write the test before the implementation. Use Foundry factories for data.
 
-### Unit Test Example
+### Unit / integration test (service + real DB)
 
 ```php
 <?php
-// tests/Unit/Service/OrderServiceTest.php
+// tests/Integration/Service/OrderServiceTest.php
 
 use App\Service\OrderService;
 use App\Entity\Order;
-use App\Entity\User;
-use function Zenstruck\Foundry\Persistence\persist;
+use App\Factory\UserFactory;
 
 beforeEach(function () {
-    $this->orderService = $this->getContainer()->get(OrderService::class);
+    // $this is the KernelTestCase bound in Pest.php
+    $this->orderService = static::getContainer()->get(OrderService::class);
 });
 
 it('creates an order for a user', function () {
-    // Arrange
-    $user = persist(User::class, [
-        'email' => 'test@example.com',
-    ]);
+    // Arrange — Foundry v2 returns a REAL User (no ->object())
+    $user = UserFactory::createOne(['email' => 'test@example.com']);
 
     // Act
-    $order = $this->orderService->createOrder($user->object(), [
+    $order = $this->orderService->createOrder($user, [
         ['productId' => 1, 'quantity' => 2],
     ]);
 
     // Assert
     expect($order)
         ->toBeInstanceOf(Order::class)
-        ->and($order->getCustomer())->toBe($user->object())
+        ->and($order->getCustomer())->toBe($user)
         ->and($order->getItems())->toHaveCount(1);
 });
 
-it('throws exception for empty items', function () {
-    $user = persist(User::class);
+it('throws for empty items', function () {
+    $user = UserFactory::createOne();
 
-    $this->orderService->createOrder($user->object(), []);
+    $this->orderService->createOrder($user, []);
 })->throws(InvalidArgumentException::class, 'Order must have at least one item');
 ```
 
-### Functional Test Example
+### Functional test (HTTP via WebTestCase)
 
 ```php
 <?php
 // tests/Functional/Api/OrderTest.php
 
-use App\Entity\User;
-use function Zenstruck\Foundry\Persistence\persist;
+use App\Factory\UserFactory;
 
 it('creates an order via API', function () {
     // Arrange
-    $user = persist(User::class, ['email' => 'test@example.com']);
+    $user = UserFactory::createOne(['email' => 'test@example.com']);
+
+    $client = static::createClient();
+    $client->loginUser($user);
 
     // Act
-    $response = $this->client
-        ->loginUser($user->object())
-        ->request('POST', '/api/orders', [
-            'json' => [
-                'items' => [
-                    ['productId' => 1, 'quantity' => 2],
-                ],
-            ],
-        ]);
+    $client->request('POST', '/api/orders', [], [], [
+        'CONTENT_TYPE' => 'application/json',
+    ], json_encode([
+        'items' => [['productId' => 1, 'quantity' => 2]],
+    ]));
 
-    // Assert
-    expect($response->getStatusCode())->toBe(201)
-        ->and($response->toArray())->toHaveKey('id');
+    // Assert — mix Symfony assertions and Pest expectations freely
+    $this->assertResponseStatusCodeSame(201);
+    expect(json_decode($client->getResponse()->getContent(), true))
+        ->toHaveKey('id');
 });
 
 it('requires authentication', function () {
-    $response = $this->client->request('POST', '/api/orders', [
-        'json' => ['items' => []],
-    ]);
+    $client = static::createClient();
+    $client->request('POST', '/api/orders', [], [], [
+        'CONTENT_TYPE' => 'application/json',
+    ], json_encode(['items' => []]));
 
-    expect($response->getStatusCode())->toBe(401);
+    $this->assertResponseStatusCodeSame(401);
 });
 ```
 
-## GREEN Phase - Minimal Code
+## GREEN Phase — minimal code
 
-Write the simplest code to pass. No extras. No premature optimization.
+Write the simplest code that passes. No speculative extras.
 
 ```php
 <?php
 // src/Service/OrderService.php
 
-class OrderService
+final class OrderService
 {
+    public function __construct(private EntityManagerInterface $em) {}
+
     public function createOrder(User $user, array $items): Order
     {
         if (empty($items)) {
             throw new \InvalidArgumentException('Order must have at least one item');
         }
 
-        $order = new Order();
-        $order->setCustomer($user);
-        $order->setStatus(OrderStatus::PENDING);
+        $order = (new Order())
+            ->setCustomer($user)
+            ->setStatus(OrderStatus::PENDING);
 
         foreach ($items as $item) {
-            $orderItem = new OrderItem();
-            $orderItem->setProductId($item['productId']);
-            $orderItem->setQuantity($item['quantity']);
-            $order->addItem($orderItem);
+            $order->addItem(
+                (new OrderItem())
+                    ->setProductId($item['productId'])
+                    ->setQuantity($item['quantity'])
+            );
         }
 
         $this->em->persist($order);
@@ -151,23 +205,27 @@ class OrderService
 
 ## REFACTOR Phase
 
-Once green, improve:
-- Extract services from controllers
-- Create value objects for complex data
-- Add repository methods for queries
+Once green, improve without changing behavior:
 
-## Foundry Integration
+- Extract services from controllers.
+- Introduce value objects for complex data.
+- Move queries into repository methods.
+
+Re-run `./vendor/bin/pest` after each step — the suite is your safety net.
+
+## Foundry v2 factory (reminder)
 
 ```php
 <?php
-// tests/Factory/UserFactory.php
+// src/Factory/UserFactory.php
 
-namespace App\Tests\Factory;
+namespace App\Factory;
 
 use App\Entity\User;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
-final class UserFactory extends PersistentProxyObjectFactory
+/** @extends PersistentObjectFactory<User> */
+final class UserFactory extends PersistentObjectFactory
 {
     public static function class(): string
     {
@@ -178,7 +236,6 @@ final class UserFactory extends PersistentProxyObjectFactory
     {
         return [
             'email' => self::faker()->unique()->email(),
-            'password' => 'hashed_password',
             'roles' => ['ROLE_USER'],
         ];
     }
@@ -190,30 +247,19 @@ final class UserFactory extends PersistentProxyObjectFactory
 }
 ```
 
-Usage:
-
 ```php
-use App\Tests\Factory\UserFactory;
-
-// Single user
-$user = UserFactory::createOne();
-
-// With specific attributes
-$admin = UserFactory::createOne()->admin();
-
-// Multiple
+$user  = UserFactory::createOne();              // real User
+$admin = UserFactory::new()->admin()->create();
 $users = UserFactory::createMany(5);
-
-// Without persisting
-$user = UserFactory::new()->withoutPersisting()->create();
+$draft = UserFactory::new()->withoutPersisting()->create();
 ```
 
-## Pest Expectations
+## Pest expectations
 
 ```php
-// Basic
-expect($value)->toBe($expected);
-expect($value)->toEqual($expected);
+// Equality / truthiness
+expect($value)->toBe($expected);          // strict ===
+expect($value)->toEqual($expected);       // loose ==
 expect($value)->toBeTrue();
 expect($value)->toBeFalse();
 expect($value)->toBeNull();
@@ -235,20 +281,24 @@ expect($string)->toContain('substring');
 expect($string)->toStartWith('prefix');
 expect($string)->toMatch('/pattern/');
 
-// Chaining
+// Chaining with ->and()
 expect($order)
     ->toBeInstanceOf(Order::class)
     ->and($order->getStatus())->toBe(OrderStatus::PENDING)
     ->and($order->getItems())->toHaveCount(2);
 ```
 
-## Key Principles
+`describe()` groups related tests; `beforeEach()`/`afterEach()` hooks and datasets
+behave as in standard Pest. PHPUnit assertions remain available via `$this->assertSame(...)`.
 
-- Every production change requires a failing test first
-- Use Foundry factories for realistic test data
-- Functional tests for HTTP, unit tests for services
-- Keep tests deterministic - no random delays
-- One assertion concept per test (can chain related expects)
+## Key principles
+
+- Every production change starts with a failing test.
+- Use Foundry v2 factories for realistic, persisted test data (real objects, no proxies).
+- Functional tests for HTTP, integration/unit tests for services.
+- Keep tests deterministic — no random sleeps; seed Faker if needed (`FOUNDRY_FAKER_SEED`).
+- One assertion concept per test (chain related `expect()` with `->and()`).
+- No official Symfony plugin — wire `KernelTestCase`/`WebTestCase` via `uses()` in `Pest.php`.
 
 
 ## Skill Operating Checklist
@@ -259,12 +309,11 @@ expect($order)
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- ./vendor/bin/phpunit --filter=...
-- ./vendor/bin/phpunit
 - ./vendor/bin/pest --filter=...
+- ./vendor/bin/pest
+- ./vendor/bin/pest --parallel
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
 - Retry or partial-failure behavior for async flows.
-
