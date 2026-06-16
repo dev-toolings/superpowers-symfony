@@ -5,7 +5,7 @@ allowed-tools:
   - Read
   - Glob
   - Grep
-description: Apply production-grade Symfony architecture and execution workflows with controlled scope and clear checkpoints. Use for value objects and dtos tasks.
+description: Design Value Objects for domain concepts and DTOs for data transfer with proper immutability (readonly) and validation
 ---
 
 # Value Objects And Dtos (Symfony)
@@ -17,8 +17,8 @@ description: Apply production-grade Symfony architecture and execution workflows
 ## Default workflow
 1. Establish current boundaries, constraints, and coupling points.
 2. Propose smallest coherent architectural adjustment.
-2. Execute in checkpoints with validation at each stage.
-2. Summarize tradeoffs and follow-up backlog.
+3. Execute in checkpoints with validation at each stage.
+4. Summarize tradeoffs and follow-up backlog.
 
 ## Guardrails
 - Use existing project patterns by default.

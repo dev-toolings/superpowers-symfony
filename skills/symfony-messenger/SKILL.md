@@ -7,7 +7,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Implement resilient Symfony async workflows with idempotency, retries, and operational visibility. Use for symfony messenger tasks.
+description: Async message handling with Symfony Messenger; configure transports (RabbitMQ, Redis, Doctrine); implement handlers, middleware, and retry strategies
 ---
 
 # Symfony Messenger (Symfony)
@@ -19,8 +19,8 @@ description: Implement resilient Symfony async workflows with idempotency, retri
 ## Default workflow
 1. Define async contract and delivery semantics.
 2. Implement idempotent handlers and routing strategy.
-2. Configure retries, failure transport, and observability.
-2. Validate success/failure replay scenarios.
+3. Configure retries, failure transport, and observability.
+4. Validate success/failure replay scenarios.
 
 ## Guardrails
 - Assume at-least-once delivery, not exactly-once.

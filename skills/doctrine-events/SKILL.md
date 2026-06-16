@@ -8,7 +8,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: React to Doctrine entity lifecycle (persist/update/remove/load) in Symfony using attribute-based listeners, entity listeners, and lifecycle callbacks. Use for doctrine events tasks on ORM 3.x.
+description: React to Doctrine entity lifecycle in Symfony with attribute listeners (#[AsDoctrineListener]/#[AsEntityListener], ORM 3) and lifecycle callbacks
 ---
 
 # Doctrine Events (Symfony)

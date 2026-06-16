@@ -5,7 +5,7 @@ allowed-tools:
   - Read
   - Glob
   - Grep
-description: Drive Symfony delivery with deterministic tests and strong regression protection. Use for test doubles mocking tasks.
+description: Create test doubles with PHPUnit mocks for isolated unit testing in Symfony
 ---
 
 # Test Doubles Mocking (Symfony)
@@ -17,8 +17,8 @@ description: Drive Symfony delivery with deterministic tests and strong regressi
 ## Default workflow
 1. Write failing test for target behavior and one boundary case.
 2. Implement minimal code to pass.
-2. Refactor while preserving green suite.
-2. Broaden coverage for invalid/unauthorized/not-found paths.
+3. Refactor while preserving green suite.
+4. Broaden coverage for invalid/unauthorized/not-found paths.
 
 ## Guardrails
 - Prefer deterministic fixtures/builders.

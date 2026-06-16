@@ -8,7 +8,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Evolve Symfony Doctrine models and schema safely with integrity, performance, and rollout discipline. Use for doctrine fetch modes tasks.
+description: Optimize Doctrine fetching with DTO hydration (SELECT NEW; partial removed in ORM 3), lazy loading, query hints, and DBAL 4 access
 ---
 
 # Doctrine Fetch Modes (Symfony)
@@ -20,8 +20,8 @@ description: Evolve Symfony Doctrine models and schema safely with integrity, pe
 ## Default workflow
 1. Model ownership/cardinality and transactional boundaries.
 2. Apply mapping/schema changes with migration safety.
-2. Tune fetch/query behavior for hot paths.
-2. Verify lifecycle behavior with targeted tests.
+3. Tune fetch/query behavior for hot paths.
+4. Verify lifecycle behavior with targeted tests.
 
 ## Guardrails
 - Keep owning/inverse sides coherent.

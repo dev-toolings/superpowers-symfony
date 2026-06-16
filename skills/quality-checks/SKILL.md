@@ -7,7 +7,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Apply production-grade Symfony architecture and execution workflows with controlled scope and clear checkpoints. Use for quality checks tasks.
+description: Run code quality tools: PHP-CS-Fixer for style, PHPStan for static analysis, and type safety checks
 ---
 
 # Quality Checks (Symfony)
@@ -19,8 +19,8 @@ description: Apply production-grade Symfony architecture and execution workflows
 ## Default workflow
 1. Establish current boundaries, constraints, and coupling points.
 2. Propose smallest coherent architectural adjustment.
-2. Execute in checkpoints with validation at each stage.
-2. Summarize tradeoffs and follow-up backlog.
+3. Execute in checkpoints with validation at each stage.
+4. Summarize tradeoffs and follow-up backlog.
 
 ## Guardrails
 - Use existing project patterns by default.

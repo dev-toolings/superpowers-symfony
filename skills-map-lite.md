@@ -15,7 +15,8 @@ Lightweight index for fast discovery.
 - `symfony:doctrine-fetch-modes` — Optimize Doctrine queries with fetch modes, lazy loading, extra lazy collections, and query hints for performance
 - `symfony:doctrine-relations` — Define Doctrine entity relationships (OneToMany, ManyToMany, ManyToOne); configure fetch modes, cascade operations, and orphan removal; prevent N+1 queries
 - `symfony:doctrine-fixtures-foundry` — Create test data with Foundry factories; define states, sequences, and relationships for realistic fixtures
-- `symfony:doctrine-transactions` — Handle database transactions with Doctrine UnitOfWork; implement optimistic locking, flush strategies, and transaction boundaries
+- `symfony:doctrine-transactions` — Handle Doctrine transactions (ORM 3 wrapInTransaction); optimistic/pessimistic locking, flush strategies, and transaction boundaries
+- `symfony:doctrine-events` — React to Doctrine entity lifecycle with attribute listeners (#[AsDoctrineListener]/#[AsEntityListener], ORM 3) and lifecycle callbacks
 
 ## API Platform
 - `symfony:api-platform-filters` — Implement API Platform filters for search, date ranges, boolean, and custom filtering with proper indexing

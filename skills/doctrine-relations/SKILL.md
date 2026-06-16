@@ -7,7 +7,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Evolve Symfony Doctrine models and schema safely with integrity, performance, and rollout discipline. Use for doctrine relations tasks.
+description: Define Doctrine entity relationships (OneToMany, ManyToMany, ManyToOne); configure cascade, orphan removal, multiple entity managers; prevent N+1 queries
 ---
 
 # Doctrine Relations (Symfony)
@@ -19,8 +19,8 @@ description: Evolve Symfony Doctrine models and schema safely with integrity, pe
 ## Default workflow
 1. Model ownership/cardinality and transactional boundaries.
 2. Apply mapping/schema changes with migration safety.
-2. Tune fetch/query behavior for hot paths.
-2. Verify lifecycle behavior with targeted tests.
+3. Tune fetch/query behavior for hot paths.
+4. Verify lifecycle behavior with targeted tests.
 
 ## Guardrails
 - Keep owning/inverse sides coherent.

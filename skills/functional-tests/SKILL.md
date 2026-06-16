@@ -7,12 +7,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: >
-  Write and maintain Symfony functional tests using WebTestCase and TDD (RED/GREEN/REFACTOR).
-  Converts bug reports into failing tests, builds regression-safe behavior,
-  and validates HTTP responses, form submissions, and authorization flows.
-  Use when the user asks to write functional tests, add test coverage, convert
-  a bug into a test, or set up TDD workflow for Symfony controllers and endpoints.
+description: Write functional tests for Symfony controllers and HTTP endpoints using WebTestCase, getContainer, loginUser, and DAMA rollback
 ---
 
 # Functional Tests (Symfony)
@@ -24,8 +19,8 @@ description: >
 ## Default workflow
 1. Write failing test for target behavior and one boundary case.
 2. Implement minimal code to pass.
-2. Refactor while preserving green suite.
-2. Broaden coverage for invalid/unauthorized/not-found paths.
+3. Refactor while preserving green suite.
+4. Broaden coverage for invalid/unauthorized/not-found paths.
 
 ## Guardrails
 - Prefer deterministic fixtures/builders.

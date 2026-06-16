@@ -8,7 +8,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Implement resilient Symfony async workflows with idempotency, retries, and operational visibility. Use for symfony scheduler tasks.
+description: Schedule recurring tasks with the Symfony Scheduler component (native since 7.x); define schedules, triggers, and integrate with Messenger
 ---
 
 # Symfony Scheduler (Symfony)
@@ -20,8 +20,8 @@ description: Implement resilient Symfony async workflows with idempotency, retri
 ## Default workflow
 1. Define async contract and delivery semantics.
 2. Implement idempotent handlers and routing strategy.
-2. Configure retries, failure transport, and observability.
-2. Validate success/failure replay scenarios.
+3. Configure retries, failure transport, and observability.
+4. Validate success/failure replay scenarios.
 
 ## Guardrails
 - Assume at-least-once delivery, not exactly-once.

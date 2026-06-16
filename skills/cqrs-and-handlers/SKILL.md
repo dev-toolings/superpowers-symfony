@@ -5,7 +5,7 @@ allowed-tools:
   - Read
   - Glob
   - Grep
-description: Apply production-grade Symfony architecture and execution workflows with controlled scope and clear checkpoints. Use for cqrs and handlers tasks.
+description: Implement CQRS in Symfony with separate Command and Query buses/handlers using the Messenger component
 ---
 
 # Cqrs And Handlers (Symfony)
@@ -17,8 +17,8 @@ description: Apply production-grade Symfony architecture and execution workflows
 ## Default workflow
 1. Establish current boundaries, constraints, and coupling points.
 2. Propose smallest coherent architectural adjustment.
-2. Execute in checkpoints with validation at each stage.
-2. Summarize tradeoffs and follow-up backlog.
+3. Execute in checkpoints with validation at each stage.
+4. Summarize tradeoffs and follow-up backlog.
 
 ## Guardrails
 - Use existing project patterns by default.

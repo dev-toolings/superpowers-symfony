@@ -8,7 +8,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Drive Symfony delivery with deterministic tests and strong regression protection. Use for tdd with pest tasks.
+description: Apply RED-GREEN-REFACTOR with Pest v4 (PHP 8.3+) for Symfony via the PHPUnit bridge; Foundry factories, WebTestCase, verify failures first
 ---
 
 # Tdd With Pest (Symfony)
@@ -20,8 +20,8 @@ description: Drive Symfony delivery with deterministic tests and strong regressi
 ## Default workflow
 1. Write failing test for target behavior and one boundary case.
 2. Implement minimal code to pass.
-2. Refactor while preserving green suite.
-2. Broaden coverage for invalid/unauthorized/not-found paths.
+3. Refactor while preserving green suite.
+4. Broaden coverage for invalid/unauthorized/not-found paths.
 
 ## Guardrails
 - Prefer deterministic fixtures/builders.

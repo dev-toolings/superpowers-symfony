@@ -8,7 +8,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Implement resilient Symfony async workflows with idempotency, retries, and operational visibility. Use for rate limiting tasks.
+description: Implement rate limiting with the Symfony RateLimiter (sliding window, token bucket, fixed window) and the #[RateLimit] controller attribute
 ---
 
 # Rate Limiting (Symfony)
@@ -20,8 +20,8 @@ description: Implement resilient Symfony async workflows with idempotency, retri
 ## Default workflow
 1. Define async contract and delivery semantics.
 2. Implement idempotent handlers and routing strategy.
-2. Configure retries, failure transport, and observability.
-2. Validate success/failure replay scenarios.
+3. Configure retries, failure transport, and observability.
+4. Validate success/failure replay scenarios.
 
 ## Guardrails
 - Assume at-least-once delivery, not exactly-once.

@@ -8,7 +8,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Strengthen Symfony authorization and validation boundaries with explicit, test-backed enforcement. Use for form types validation tasks.
+description: Build Symfony forms with custom Form Types, validation constraints, HTTP 422 handling, and multi-step flows
 ---
 
 # Form Types Validation (Symfony)
@@ -20,8 +20,8 @@ description: Strengthen Symfony authorization and validation boundaries with exp
 ## Default workflow
 1. Map actor/resource/action decision matrix.
 2. Implement voter/constraint logic at the right boundary.
-2. Wire checks at controllers and API operations.
-2. Test allowed/forbidden/invalid paths comprehensively.
+3. Wire checks at controllers and API operations.
+4. Test allowed/forbidden/invalid paths comprehensively.
 
 ## Guardrails
 - Avoid policy logic duplication across layers.

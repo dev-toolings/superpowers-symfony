@@ -7,7 +7,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Deliver robust API Platform contracts in Symfony with explicit operations, mapping, and policy-safe behavior. Use for api platform dto resources tasks.
+description: Map entities to API DTOs in API Platform v4 with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts
 ---
 
 # Api Platform Dto Resources (Symfony)
@@ -19,8 +19,8 @@ description: Deliver robust API Platform contracts in Symfony with explicit oper
 ## Default workflow
 1. Define operation-level contract and payload boundaries.
 2. Implement resource/DTO/provider/processor changes with explicit mapping.
-2. Apply operation-specific validation and security constraints.
-2. Validate functional behavior across happy and negative paths.
+3. Apply operation-specific validation and security constraints.
+4. Validate functional behavior across happy and negative paths.
 
 ## Guardrails
 - Keep API contract explicit and version-aware.
