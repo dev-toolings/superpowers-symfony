@@ -8,7 +8,7 @@ When asking Claude for help with Symfony, provide:
 
 1. **Relevant code files** - Entity, Service, Controller involved
 2. **Error messages** - Full stack trace if available
-3. **Symfony version** - 6.4, 7.x, or 8.0
+3. **Symfony version** - 8.x (stable), 7.4 LTS, or 6.4 legacy LTS
 4. **Installed bundles** - API Platform, Messenger, etc.
 5. **Constraints** - Performance requirements, backward compatibility
 

@@ -1,6 +1,6 @@
 # Superpowers Symfony
 
-A Claude Code plugin providing Symfony-specific guidance, skills, workflows, and specialized subagents. Enhances your development experience with TDD support, Doctrine guidance, API Platform patterns, and best practices for Symfony 6.4 LTS, 7.x, and 8.0.
+A Claude Code plugin providing Symfony-specific guidance, skills, workflows, and specialized subagents. Enhances your development experience with TDD support, Doctrine guidance, API Platform patterns, and best practices for Symfony 7.4 LTS and 8.x (6.4 LTS still supported as legacy).
 
 ## Features
 
@@ -200,11 +200,12 @@ Claude invokes agents automatically based on your task. You can also reference t
 
 | Framework | Version | Status |
 |-----------|---------|--------|
-| Symfony | 6.4 LTS | Supported |
-| Symfony | 7.x | Supported |
+| Symfony | 8.1 (stable) | Supported |
 | Symfony | 8.0 | Supported |
-| API Platform | 3.x | Supported |
+| Symfony | 7.4 LTS | Supported (current LTS) |
+| Symfony | 6.4 LTS | Supported (legacy, EOL bugfix 11/2026) |
 | API Platform | 4.x | Supported |
+| API Platform | 3.x | Supported (legacy) |
 
 ## Docker Support
 

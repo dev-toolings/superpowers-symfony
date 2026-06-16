@@ -78,11 +78,12 @@ The `session-start.sh` hook automatically detects:
 
 | Framework | Version | Status |
 |-----------|---------|--------|
-| Symfony | 6.4 LTS | Fully supported |
-| Symfony | 7.x | Fully supported |
+| Symfony | 8.1 (stable) | Fully supported |
 | Symfony | 8.0 | Fully supported |
-| API Platform | 3.x | Fully supported |
+| Symfony | 7.4 LTS | Fully supported (current LTS) |
+| Symfony | 6.4 LTS | Supported (legacy, EOL bugfix 11/2026) |
 | API Platform | 4.x | Fully supported |
+| API Platform | 3.x | Supported (legacy) |
 
 ---
 

@@ -293,7 +293,10 @@ main() {
   "active_app": "$active_app",
   "symfony": {
     "version": "$symfony_version",
-    "is_lts": $(if [[ "$symfony_version" == "6.4" ]]; then echo "true"; else echo "false"; fi)
+    "is_lts": $(if [[ "$symfony_version" == "6.4" || "$symfony_version" == "7.4" ]]; then echo "true"; else echo "false"; fi),
+    "is_legacy": $(if [[ "$symfony_version" == "5.4" || "$symfony_version" == "6.4" ]]; then echo "true"; else echo "false"; fi),
+    "current_lts": "7.4",
+    "current_stable": "8.1"
   },
   "api_platform": {
     "installed": $has_api_platform,
