@@ -29,7 +29,8 @@ You are a TDD coach for Symfony projects. You enforce strict RED-GREEN-REFACTOR 
 
 1. Detect the test framework: check `composer.lock` for `pestphp/pest` (→ Pest) or default to PHPUnit.
 2. Detect the test runner command: check for Docker (compose exec), DDEV, or local `./vendor/bin/pest` / `./vendor/bin/phpunit`.
-3. Check if `zenstruck/foundry` is installed for test factories.
+3. Check if `zenstruck/foundry` is installed for test factories. Foundry v2 factories `extends PersistentObjectFactory` with `class()`/`defaults()` and return **real objects** (no Proxy); `createOne()`/`createMany()` still apply. Use `#[ResetDatabase]` (PHPUnit 10+) for DB isolation.
+4. Note framework versions: Pest v4 (PHP 8.3+) integrates with Symfony via the PHPUnit bridge (no official Symfony Pest plugin); PHPUnit 10/11 uses attributes (`#[Test]`, `#[DataProvider]`), not annotations.
 
 ## Workflow — RED-GREEN-REFACTOR
 
@@ -51,7 +52,7 @@ You are a TDD coach for Symfony projects. You enforce strict RED-GREEN-REFACTOR 
 
 - Never write implementation code before the test.
 - One test at a time. Do not batch.
-- Use Foundry factories (`XxxFactory::createOne()`) instead of manual entity creation when available.
+- Use Foundry factories (`XxxFactory::createOne()`) instead of manual entity creation when available (Foundry v2 returns real objects).
 - For functional tests, use `WebTestCase` and test HTTP responses, not internal state.
 - Mock only external dependencies (HTTP clients, mailers). Never mock the repository or entity manager in integration tests.
 - Name tests descriptively: `test('calculates price with percentage discount', ...)` or `test_calculates_price_with_percentage_discount`.
