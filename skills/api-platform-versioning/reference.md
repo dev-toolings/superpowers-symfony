@@ -2,9 +2,71 @@
 
 # API Platform Versioning
 
+> **Official recommendation (v3 & v4): prefer DEPRECATION over versioning.** API Platform's guidance is to evolve a single API and deprecate fields/operations with a sunset window, rather than maintaining parallel `/v1`, `/v2` surfaces. Reach for path versioning only when a breaking representation change genuinely cannot be expressed through deprecation + groups. Start at the "Deprecation (recommended)" section below; the multi-version strategies after it are the fallback.
+
+## Deprecation (recommended)
+
+### `deprecationReason`
+
+Marks a resource, operation, or property as deprecated. Rendered in JSON-LD/Hydra, GraphQL, and OpenAPI (Swagger UI / GraphiQL):
+
+```php
+<?php
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Get;
+
+#[ApiResource(deprecationReason: 'Use the Book resource instead.')]
+#[Get(deprecationReason: 'Retrieve a Book instead.')]
+class Parchment
+{
+    #[ApiProperty(deprecationReason: 'Use the rating property instead.')]
+    public int $score;
+}
+```
+
+### Sunset header (RFC 8594)
+
+Tell consumers when the resource will be removed. The string is converted to a valid HTTP date:
+
+```php
+#[ApiResource(
+    deprecationReason: 'Create a Book instead.',
+    sunset: '2026-12-31',
+)]
+class Parchment {}
+```
+
+### Deprecation header (RFC 9745) — NEW in v4
+
+v4 can emit the standardized `Deprecation` HTTP header (RFC 9745) — set via the operation `headers` option (Unix timestamps + optional documentation links):
+
+```php
+use ApiPlatform\Metadata\Get;
+
+#[Get(
+    deprecationReason: 'Use /books/{id} instead.',
+    sunset: '2026-12-31',
+    headers: [
+        'Deprecation' => '@1767225600',   // RFC 9745: timestamp the resource became deprecated
+        'Link' => '</books/{id}>; rel="successor-version"',
+    ],
+)]
+class Parchment {}
+```
+
+> Both `deprecationReason` and `sunset` are stable v3→v4. The RFC 9745 `Deprecation` header support is **v4-era**. (For pre-v4 codebases, emit `Deprecation`/`Sunset`/`Link` from a kernel response listener — see the listener pattern in the multi-version section.)
+
+---
+
+## Path versioning (fallback strategy)
+
+Only when deprecation cannot express the change. The patterns below maintain multiple representations in parallel.
+
 ## Versioning Strategies
 
-### 1. URI Versioning (Recommended)
+### 1. URI Versioning
 
 ```php
 <?php
@@ -182,20 +244,22 @@ class VersionedProductProvider implements ProviderInterface
 }
 ```
 
-## Deprecation
+## Deprecation on a versioned endpoint
 
 ### Mark Deprecated Operations
 
 ```php
+use ApiPlatform\OpenApi\Model;
+
 #[ApiResource(
     operations: [
         // Deprecated v1 endpoint
         new Get(
             uriTemplate: '/v1/products/{id}',
-            deprecationReason: 'Use /v2/products/{id} instead. Will be removed in 2025.',
-            openapiContext: [
-                'deprecated' => true,
-            ],
+            deprecationReason: 'Use /v2/products/{id} instead. Will be removed in 2026.',
+            sunset: '2026-12-31',
+            // v4: typed OpenApi\Model\Operation (openapiContext array is deprecated in v4)
+            openapi: new Model\Operation(deprecated: true),
         ),
         // Current v2 endpoint
         new Get(
@@ -206,7 +270,9 @@ class VersionedProductProvider implements ProviderInterface
 class Product { /* ... */ }
 ```
 
-### Sunset Header
+### Sunset / Deprecation headers via a response listener (pre-v4 fallback)
+
+On v4, prefer the operation `headers` option (RFC 9745, shown in "Deprecation (recommended)"). On older versions, emit the headers from a listener:
 
 ```php
 <?php

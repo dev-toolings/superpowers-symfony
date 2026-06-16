@@ -93,6 +93,34 @@ class Post { /* ... */ }
 
 Useful when security depends on the input data itself.
 
+### Security Post-Validation
+
+`securityPostValidation` runs **after** the Symfony Validator has validated the object — so the expression can rely on the data being structurally valid. Useful when the authorization rule depends on a value that must first pass validation:
+
+```php
+#[ApiResource(
+    operations: [
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            securityPostValidation: "is_granted('POST_PUBLISH', object)",
+            securityPostValidationMessage: 'You cannot publish in this category.',
+        ),
+    ],
+)]
+class Post { /* ... */ }
+```
+
+Execution order: `security` (before denormalization) → denormalization → `securityPostDenormalize` → validation → `securityPostValidation`.
+
+### Expression variables
+
+| Variable | Available in | Meaning |
+|---|---|---|
+| `user` | all | current authenticated user |
+| `object` | all | the resource (persisted state for `security`, request data for the post-* checks) |
+| `request` | resource level only | current `Request` |
+| `previous_object` | `securityPostDenormalize` only | clone of the object before denormalization (null on create) |
+
 ## Security Expressions Reference
 
 ```php
@@ -120,6 +148,8 @@ security: "is_granted('ROLE_ADMIN') or request.get('category') != 'restricted'"
 ```
 
 ## Collection Security
+
+> **Rule.** Per-user collection filtering must happen at the **state provider / Doctrine query extension** level — **never** through a `security` expression. A `security` expression on a collection operation gates *access to the whole collection*; it cannot scope *which rows* a user sees. Use a `QueryCollectionExtensionInterface` (below) or a custom state provider.
 
 ### Filter Collections by User
 
@@ -305,12 +335,33 @@ use Symfony\Component\RateLimiter\Attribute\RateLimit;
 class Comment { /* ... */ }
 ```
 
+## Access decision reasons (Symfony 8.1+)
+
+When you need the *reason* a decision was made (not just grant/deny) — e.g. to surface it in a response or log — use the access-decision helpers instead of a bare `isGranted()`:
+
+```php
+// Service: $security->getAccessDecision('POST_EDIT', $post) → AccessDecision with ->isGranted / ->message
+$decision = $this->security->getAccessDecision('POST_EDIT', $post);
+if (!$decision->isGranted) {
+    // $decision->message carries the voter's reason (Vote::addReason)
+}
+```
+
+```twig
+{# Twig helper: access_decision('attr', subject).isGranted / .message #}
+{% if not access_decision('POST_EDIT', post).isGranted %}
+    <p>{{ access_decision('POST_EDIT', post).message }}</p>
+{% endif %}
+```
+
+These pair with voters that attach reasons via the `?Vote $vote` argument (Symfony 7.3+) of `voteOnAttribute()`.
+
 ## Best Practices
 
 1. **Use voters** for complex authorization logic
-2. **Filter collections** with Doctrine extensions
+2. **Filter collections** with Doctrine extensions or a state provider — never a `security` expression
 3. **Fail secure** - deny by default
-4. **Clear error messages** - help users understand
+4. **Clear error messages** - help users understand (surface `access_decision().message` when useful)
 5. **Test security** - verify both grant and deny cases
 6. **Audit sensitive operations** - log access attempts
 

@@ -2,11 +2,14 @@
 
 # Testing API Platform
 
+> **Version note.** `ApiPlatform\Symfony\Bundle\Test\ApiTestCase` and the Client/assertion API are stable v3→v4 (the namespace was `ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase` only in v2). The examples below use **Zenstruck Foundry v2** (`#[ResetDatabase]` attribute style); see "Foundry v2 reset" for the trait-based PHPUnit 9 fallback.
+
 ## Setup
 
 ```bash
-composer require --dev api-platform/core
+composer require --dev api-platform/symfony   # v4: the test client ships with the Symfony bridge
 composer require --dev zenstruck/foundry
+composer require --dev dama/doctrine-test-bundle  # transactional rollback between tests
 ```
 
 ## Basic API Tests
@@ -166,7 +169,7 @@ public function testAuthenticatedUserCanCreate(): void
     $user = UserFactory::createOne();
 
     static::createClient()->request('POST', '/api/products', [
-        'auth_bearer' => $this->getToken($user->object()),
+        'auth_bearer' => $this->getToken($user),
         'json' => [
             'name' => 'New Product',
             'price' => 1999,
@@ -196,14 +199,14 @@ public function testOnlyOwnerCanUpdate(): void
 
     // Owner can update
     static::createClient()->request('PUT', '/api/products/' . $product->getId(), [
-        'auth_bearer' => $this->getToken($owner->object()),
+        'auth_bearer' => $this->getToken($owner),
         'json' => ['name' => 'Updated'],
     ]);
     $this->assertResponseIsSuccessful();
 
     // Other user cannot
     static::createClient()->request('PUT', '/api/products/' . $product->getId(), [
-        'auth_bearer' => $this->getToken($otherUser->object()),
+        'auth_bearer' => $this->getToken($otherUser),
         'json' => ['name' => 'Hacked'],
     ]);
     $this->assertResponseStatusCodeSame(403);
@@ -309,6 +312,44 @@ public function testItemMatchesSchema(): void
     static::createClient()->request('GET', '/api/products/' . $product->getId());
 
     $this->assertMatchesResourceItemJsonSchema(Product::class);
+}
+```
+
+## Foundry v2 reset
+
+Foundry v2 factories return **real objects** (no Proxy), and the database reset is exposed both as a trait and a PHPUnit 10+ attribute:
+
+```php
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use Zenstruck\Foundry\Attribute\ResetDatabase; // PHPUnit 10+ / Foundry 2.9
+use Zenstruck\Foundry\Test\Factories;
+
+#[ResetDatabase]
+final class ProductTest extends ApiTestCase
+{
+    use Factories;
+    // ...
+}
+```
+
+PHPUnit 9 fallback: `use Zenstruck\Foundry\Test\ResetDatabase;` + `use Zenstruck\Foundry\Test\Factories;` traits. `DAMADoctrineTestBundle` wraps each test in a rolled-back transaction (no truncation needed).
+
+## Asserting denormalization errors (v4)
+
+When a resource sets `collectDenormalizationErrors: true`, a payload with type mismatches returns **422** with every offending field collected (rather than failing on the first one). Assert the violation list:
+
+```php
+public function testTypeMismatchCollectsAllErrors(): void
+{
+    static::createClient()->request('POST', '/api/products', [
+        'json' => [
+            'name' => 123,        // expected string
+            'price' => 'free',    // expected int
+        ],
+    ]);
+
+    $this->assertResponseStatusCodeSame(422);
+    $this->assertJsonContains(['@type' => 'ConstraintViolationList']);
 }
 ```
 

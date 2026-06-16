@@ -2,6 +2,44 @@
 
 # API Platform Serialization
 
+> **Namespace note (Symfony 7+ / API Platform v4).** Serializer attributes live under `Symfony\Component\Serializer\Attribute\*` (renamed from `Annotation\*`): `Groups`, `Ignore`, `SerializedName`, `SerializedPath`, `Context`, `MaxDepth`, `DiscriminatorMap`. The old `Annotation\*` names still resolve but new code should use `Attribute\*`. The core serialization model (groups, contexts, `#[ApiProperty]`) is stable v3→v4.
+
+## Property-level context — `#[Context]` (Symfony 7.0+)
+
+Apply normalizer options per property (e.g. a date format) without a custom normalizer:
+
+```php
+use Symfony\Component\Serializer\Attribute\Context;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+
+class Event
+{
+    #[Groups(['event:read'])]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
+    public \DateTimeImmutable $startsAt;
+
+    // group-scoped context: only applies when serializing with the 'extended' group
+    #[Context(normalizationContext: [DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339], groups: ['extended'])]
+    public \DateTimeImmutable $endsAt;
+}
+```
+
+## Relations as IRIs — `readableLink` / `writableLink`
+
+By default related resources are embedded only if they share a serialization group; otherwise they render as IRIs. Force the IRI form (never embed) with `#[ApiProperty]`:
+
+```php
+use ApiPlatform\Metadata\ApiProperty;
+
+class Post
+{
+    #[ApiProperty(readableLink: false, writableLink: false)]
+    #[Groups(['post:read'])]
+    private User $author; // always serialized/accepted as an IRI, never embedded
+}
+```
+
 ## Serialization Groups
 
 ### Basic Groups
