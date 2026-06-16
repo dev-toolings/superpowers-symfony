@@ -32,7 +32,12 @@ detect_symfony_apps() {
     -not -path "*/.git/*" \
     -print0 2>/dev/null)
 
-  printf '%s\n' "${apps[@]}"
+  # Guard the empty case: under bash 3.2 + `set -u`, expanding an empty
+  # array as "${apps[@]}" raises "apps[@]: unbound variable" (only fixed in
+  # bash 4.4+). ${#apps[@]} is safe on an empty array, so gate on the count.
+  if [[ ${#apps[@]} -gt 0 ]]; then
+    printf '%s\n' "${apps[@]}"
+  fi
 }
 
 # ============================================
@@ -223,10 +228,15 @@ get_runner_commands() {
 
 main() {
   local cwd="${PWD}"
-  local apps
+  local apps=()
 
   # Detect Symfony applications
-  mapfile -t apps < <(detect_symfony_apps "$cwd")
+  # NOTE: use a read loop instead of `mapfile -t` — mapfile is a bash 4.0+
+  # builtin and macOS ships bash 3.2.57, so mapfile triggers
+  # "mapfile: command not found". This idiom is portable across bash 3.2/4/5.
+  while IFS= read -r app_line; do
+    apps+=("$app_line")
+  done < <(detect_symfony_apps "$cwd")
 
   if [[ ${#apps[@]} -eq 0 ]]; then
     # No Symfony application detected

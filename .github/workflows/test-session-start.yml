@@ -12,7 +12,16 @@ on:
 
 jobs:
   test-hook:
-    runs-on: ubuntu-latest
+    # Run on Linux (bash 5+) AND macOS. macOS ships the system bash 3.2.57
+    # at /bin/bash, which is exactly the environment where the hook used to
+    # fail with "mapfile: command not found". The dedicated bash-3.2 step
+    # below is the regression guard for that class of bug.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
@@ -75,6 +84,53 @@ jobs:
             echo "Warning: Symfony detection may need adjustment"
           fi
 
+      - name: Regression — run under system /bin/bash (macOS = bash 3.2.57)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "System /bin/bash version:"
+          /bin/bash --version | head -1
+
+          fail=0
+
+          assert_no_shell_error() {
+            # $1 = label, $2 = combined stdout+stderr from running the hook
+            local label="$1" out="$2"
+            if echo "$out" | grep -Eq 'command not found|unbound variable|mapfile'; then
+              echo "::error::[$label] hook emitted a bash 3.2 incompatibility:"
+              echo "$out"
+              fail=1
+            else
+              echo "[$label] OK — no bash 3.2 incompatibility"
+            fi
+          }
+
+          # Case 1: no Symfony app present -> must run clean (no stderr leak)
+          empty_dir="$(mktemp -d)"
+          out="$(cd "$empty_dir" && /bin/bash "$GITHUB_WORKSPACE/hooks/session-start.sh" 2>&1 || true)"
+          assert_no_shell_error "empty-dir" "$out"
+          [[ -z "$out" ]] || { echo "::error::[empty-dir] expected no output, got: $out"; fail=1; }
+
+          # Case 2: Symfony app present -> must emit valid JSON
+          app_dir="$(mktemp -d)"
+          cat > "$app_dir/composer.json" << 'EOF'
+          {
+            "name": "test/symfony-app",
+            "require": { "symfony/framework-bundle": "^7.0" }
+          }
+          EOF
+          mkdir -p "$app_dir/bin" && touch "$app_dir/bin/console"
+          out="$(cd "$app_dir" && /bin/bash "$GITHUB_WORKSPACE/hooks/session-start.sh" 2>&1 || true)"
+          assert_no_shell_error "symfony-app" "$out"
+          if echo "$out" | jq . > /dev/null 2>&1; then
+            echo "[symfony-app] OK — valid JSON under bash 3.2"
+          else
+            echo "::error::[symfony-app] expected valid JSON, got: $out"
+            fail=1
+          fi
+
+          exit "$fail"
+
       - name: Validate hooks.json
         run: |
           echo "Validating hooks.json..."
@@ -97,4 +153,8 @@ jobs:
         run: |
           echo "Checking shell script syntax..."
           bash -n hooks/session-start.sh
+          # Also lint under the macOS system bash 3.2 parser where available
+          if [[ -x /bin/bash ]]; then
+            /bin/bash -n hooks/session-start.sh
+          fi
           echo "Shell syntax is valid!"
