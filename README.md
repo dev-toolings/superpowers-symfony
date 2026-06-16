@@ -1,6 +1,14 @@
-# Superpowers Symfony
+# Superpowers Symfony — Claude Code plugin for Symfony 7.4 LTS & 8.x
 
-A Claude Code plugin providing Symfony-specific guidance, skills, workflows, and specialized subagents. Enhances your development experience with TDD support, Doctrine guidance, API Platform patterns, and best practices for Symfony 7.4 LTS and 8.x (6.4 LTS still supported as legacy).
+> **Symfony AI development superpowers for [Claude Code](https://www.anthropic.com/claude-code).** 44 expert skills, 4 specialized subagents, and 13 slash commands covering **API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Symfony Messenger, security/voters, and DDD / hexagonal architecture**.
+
+![Symfony](https://img.shields.io/badge/Symfony-7.4_LTS_%7C_8.x-000000?logo=symfony&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.2–8.4-777BB4?logo=php&logoColor=white)
+![API Platform](https://img.shields.io/badge/API_Platform-v4-38A9DB)
+![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?logo=anthropic&logoColor=white)
+![License: MIT](https://img.shields.io/github/license/MakFly/superpowers-symfony)
+
+**Superpowers Symfony** is a Claude Code plugin that gives AI coding agents deep, version-accurate **Symfony** expertise — from **Doctrine** schema design and **API Platform** REST/GraphQL APIs to **test-driven development**, async **Messenger** workflows, caching, rate limiting, and clean architecture. It targets **Symfony 7.4 LTS and 8.x** (6.4 LTS supported as legacy), **API Platform v4** (v3 legacy), and **Doctrine ORM 3** — so the guidance, signatures, and code examples match the framework you actually run.
 
 ## Features
 
@@ -232,7 +240,7 @@ superpowers-symfony/
 │   ├── symfony-tdd-coach.md
 │   ├── doctrine-architect.md
 │   └── api-platform-builder.md
-├── skills/                   # 43 skill definitions
+├── skills/                   # 44 skill definitions
 │   ├── tdd-with-pest/
 │   │   └── SKILL.md
 │   ├── doctrine-relations/
@@ -292,3 +300,7 @@ Inspired by [superpowers-laravel](https://github.com/jpcaparas/superpowers-larav
 
 - Issues: [GitHub Issues](https://github.com/MakFly/superpowers-symfony/issues)
 - Discussions: [GitHub Discussions](https://github.com/MakFly/superpowers-symfony/discussions)
+
+---
+
+<sub>**Keywords:** Symfony, Claude Code plugin, Claude Code skills, AI coding agent, Anthropic, API Platform, Doctrine ORM, PHP 8, TDD, Pest, PHPUnit, Symfony Messenger, Scheduler, CQRS, hexagonal architecture, ports and adapters, DDD, value objects, DTO, voters, rate limiting, Twig components, Foundry, Panther, FrankenPHP, Symfony Docker, DDEV.</sub>
