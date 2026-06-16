@@ -365,7 +365,38 @@ use App\Dto\OrderOutput;
 class Order { /* ... */ }
 ```
 
-## Serializer Configuration
+## Serializer Attributes
+
+Prefer attributes on the DTO over external mapping files. The attributes live in
+the `Symfony\Component\Serializer\Attribute\*` namespace (renamed from the old
+`Annotation\*` namespace in Symfony 7.0):
+
+```php
+<?php
+
+namespace App\Dto;
+
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
+use Symfony\Component\Serializer\Attribute\Ignore;
+
+final readonly class OrderOutput
+{
+    public function __construct(
+        #[Groups(['order:read'])]
+        public string $id,
+
+        #[Groups(['order:read'])]
+        #[SerializedName('customer_id')]
+        public int $customerId,
+
+        #[Ignore]
+        public ?string $internalNote = null,
+    ) {}
+}
+```
+
+## Serializer Configuration (mapping files)
 
 ```yaml
 # config/packages/serializer.yaml
@@ -390,7 +421,7 @@ App\Domain\ValueObject\Money:
 
 1. **Value Objects are immutable**: Return new instances
 2. **Validate in constructor**: Fail fast
-3. **Use readonly**: PHP 8.1+ readonly properties
+3. **Use readonly**: `readonly` properties (PHP 8.1+) or whole `readonly class` (PHP 8.2+)
 4. **Equality by value**: Implement equals() method
 5. **DTOs are simple**: No behavior, just data
 6. **Separate Input/Output**: Different validation needs

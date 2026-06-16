@@ -219,7 +219,50 @@ framework:
         pools:
             cache.products:
                 adapter: cache.adapter.redis
-                tags: true  # Enable tag support
+                tags: true                       # generic tag support
+            # On Redis, prefer the dedicated tag-aware adapter for efficient
+            # tag storage and invalidation:
+            cache.catalog:
+                adapter: cache.adapter.redis_tag_aware
+```
+
+`TagAwareCacheInterface::invalidateTags([...])` (shown above) drops every item
+carrying one of those tags.
+
+## Early Expiration (anti-stampede)
+
+To avoid a cache stampede when a hot key expires under concurrent load, ask the
+callback to recompute *before* expiry. The probabilistic `$beta` (1.0 is a sane
+default) decides when a request recomputes early; others keep serving the stale
+value.
+
+```php
+use Symfony\Contracts\Cache\ItemInterface;
+
+$value = $this->cache->get('home_feed', function (ItemInterface $item) {
+    $item->expiresAfter(3600);
+    return $this->buildExpensiveFeed();
+}, beta: 1.0);
+```
+
+For true zero-latency refresh, offload the recompute to Messenger via
+`Symfony\Component\Cache\Messenger\EarlyExpirationHandler` + a callback service
+implementing `CallbackInterface`, so the early-expiration recomputation runs in
+a worker instead of the web request.
+
+## Marshaller per pool (8.1+ — verify)
+
+A pool can serialize/compress its values with a custom marshaller:
+
+```yaml
+framework:
+    cache:
+        pools:
+            cache.products:
+                adapter: cache.adapter.redis
+                tags: true
+                # e.g. cache.default_marshaller, or a service compressing/encrypting payloads
+                # marshaller: App\Cache\MyMarshaller
 ```
 
 ## HTTP Cache

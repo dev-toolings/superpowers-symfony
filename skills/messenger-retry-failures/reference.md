@@ -98,15 +98,23 @@ class ProcessPaymentHandler
                 previous: $e
             );
         } catch (RateLimitException $e) {
-            // Rate limited - retry after delay
+            // Rate limited - retry after delay, ignoring max_retries.
+            // `retryDelay` (ms) and `forceRetry` (8.1+ — verify) let you retry
+            // past the configured limit. forceRetry: false respects max_retries.
             throw new RecoverableMessageHandlingException(
                 'Rate limited, will retry',
-                previous: $e
+                previous: $e,
+                retryDelay: 5000,
+                forceRetry: true,
             );
         }
     }
 }
 ```
+
+> **Decode failures (8.1+ — verify):** messages that fail to decode are now
+> routed through the retry/failure pipeline instead of being silently deleted,
+> so a malformed payload lands in the `failed` transport for inspection.
 
 ## Custom Retry Strategy
 
@@ -179,26 +187,19 @@ framework:
 ### CLI Commands
 
 ```bash
-# View failed messages
-bin/console messenger:failed:show
+# View failed messages (filterable / with stats)
+bin/console messenger:failed:show [--max=50] [--class-filter='App\Message\Foo'] [--stats]
 
-# View specific message
-bin/console messenger:failed:show 123
+# View a specific failed message with full stack trace
+bin/console messenger:failed:show 123 -vv
 
-# Retry a specific message
-bin/console messenger:failed:retry 123
+# Retry messages (interactive unless --force); target a transport
+bin/console messenger:failed:retry [--force] [--transport=failed]
+bin/console messenger:failed:retry 123 --force
 
-# Retry all failed messages
-bin/console messenger:failed:retry --all
-
-# Retry with force (skip confirmation)
-bin/console messenger:failed:retry --force 123
-
-# Remove a failed message
+# Remove failed messages
 bin/console messenger:failed:remove 123
-
-# Remove all failed messages
-bin/console messenger:failed:remove --all
+bin/console messenger:failed:remove --all [--class-filter='App\Message\Foo']
 ```
 
 ### Programmatic Retry

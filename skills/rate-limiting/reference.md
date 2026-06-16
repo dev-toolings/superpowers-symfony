@@ -82,9 +82,60 @@ export:
         amount: 5          # Tokens added per interval
 ```
 
+## Policies
+
+- **fixed_window** — simplest; allows bursts at window edges.
+- **sliding_window** — `75% * previous_window_hits + current_hits`. The
+  `anchor_at` option (8.1+ — verify) aligns windows to a calendar instant.
+- **token_bucket** — tokens refilled at a rate; tolerates bursts up to bucket size.
+- **compound** — combines several limiters; *all* must accept.
+
+```yaml
+framework:
+    rate_limiter:
+        contact_form:
+            policy: compound
+            limiters: [two_per_minute, five_per_hour]
+        rolling_api:
+            policy: sliding_window
+            limit: 100
+            interval: '1 hour'
+            anchor_at: '00:00'      # 8.1+ — verify
+```
+
 ## Using Rate Limiters
 
-### In Controllers
+### As a controller attribute (8.1+ — verify)
+
+The simplest path: declare the named limiter on the action. Returns
+`429 Too Many Requests` with a `Retry-After` header automatically.
+
+```php
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\HttpKernel\Attribute\RateLimit;
+
+#[RateLimit('api')]                                              // default key = IP + method + path
+public function index(): JsonResponse {}
+
+#[RateLimit('api', methods: ['POST', 'PUT', 'PATCH', 'DELETE'])]
+public function edit(): JsonResponse {}
+
+#[RateLimit('per_account', key: new Expression('request.request.get("email")'))]
+public function resetPassword(): Response {}
+
+#[RateLimit('per_account', key: fn (array $args, Request $request): string => $request->query->get('email'))]
+public function resetViaLink(): Response {}
+
+#[RateLimit('api', tokens: 5)]                                   // consume 5 tokens
+public function export(): JsonResponse {}
+```
+
+Stack multiple `#[RateLimit]` attributes — all must pass.
+
+### In Controllers (injected service)
+
+Typehint `RateLimiterFactoryInterface` (not the concrete `RateLimiterFactory`)
+and select the named limiter with `#[Target]`:
 
 ```php
 <?php
@@ -93,17 +144,20 @@ export:
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ApiController extends AbstractController
 {
     public function __construct(
-        private RateLimiterFactory $authenticatedApiLimiter,
-        private RateLimiterFactory $anonymousApiLimiter,
+        #[Target('authenticated_api')]
+        private RateLimiterFactoryInterface $authenticatedApiLimiter,
+        #[Target('anonymous_api')]
+        private RateLimiterFactoryInterface $anonymousApiLimiter,
     ) {}
 
     #[Route('/api/data', methods: ['GET'])]

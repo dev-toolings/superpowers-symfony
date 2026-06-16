@@ -293,6 +293,84 @@ class PaymentService
 }
 ```
 
+> **Deprecation (8.1+ — verify):** matching a named alias by the *parameter name*
+> alone (as above) is deprecated. Prefer `#[Target]` so the binding is explicit
+> and rename-safe.
+
+## Named Autowiring with #[Target]
+
+`#[Target]` selects a specific implementation by its alias name, independent of
+the parameter name:
+
+```php
+use Symfony\Component\DependencyInjection\Attribute\Target;
+
+class MastodonClient
+{
+    public function __construct(
+        #[Target('shoutyTransformer')]
+        private TransformerInterface $transformer,
+    ) {}
+}
+```
+
+```yaml
+services:
+    App\Util\TransformerInterface $shoutyTransformer: '@App\Util\UppercaseTransformer'
+    App\Util\TransformerInterface: '@App\Util\Rot13Transformer'   # default
+```
+
+Inspect candidates: `php bin/console debug:autowiring TransformerInterface`.
+
+## #[Autowire] — scalars, params, env, expressions
+
+```php
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+public function __construct(
+    #[Autowire(service: 'monolog.logger.request')] private LoggerInterface $logger,
+    #[Autowire('%kernel.project_dir%/data')] private string $dataDir,
+    #[Autowire(param: 'kernel.debug')] private bool $debugMode,
+    #[Autowire(env: 'SOME_ENV_VAR')] private string $senderName,
+    #[Autowire(env: 'bool:ALLOW_ATTACHMENTS')] private bool $allowAttachments,
+    #[Autowire(expression: 'service("App\\\Mail\\\MailerConfiguration").getMailerMethod()')] private string $mailerMethod,
+) {}
+```
+
+### Refreshable env vars in long-running workers (8.1+ — verify)
+
+For workers (Messenger, daemons), inject an env var as a `\Closure` so it can
+refresh between messages instead of being frozen at boot:
+
+```php
+public function __construct(
+    #[Autowire(env: 'DB_URL')] private \Closure $dbUrl,   // ($this->dbUrl)()
+) {}
+```
+
+### Service closures
+
+```php
+use Symfony\Component\DependencyInjection\Attribute\AutowireServiceClosure;
+
+#[AutowireServiceClosure('mailer.default')]
+private \Closure $mailer;   // ($this->mailer)()->send(...) — lazily resolved
+```
+
+### Inline anonymous services (8.1+ — verify)
+
+```php
+use Symfony\Component\DependencyInjection\Attribute\AutowireInline;
+
+public function __construct(
+    #[AutowireInline(
+        class: [ScopingHttpClient::class, 'forBaseUri'],
+        arguments: ['$baseUri' => 'https://api.example.com'],
+    )]
+    private HttpClientInterface $client,
+) {}
+```
+
 ## Lazy Services
 
 Load service only when actually used:

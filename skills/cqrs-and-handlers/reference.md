@@ -184,18 +184,48 @@ final readonly class GetOrdersByCustomerHandler
 # config/packages/messenger.yaml
 framework:
     messenger:
-        default_bus: command.bus
+        default_bus: command_bus
 
         buses:
-            command.bus:
+            command_bus:
                 middleware:
                     - validation
                     - doctrine_transaction
 
-            query.bus:
+            query_bus:
                 middleware:
                     - validation
+
+        # Route by namespace so commands/queries land on the right bus.
+        routing:
+            'App\Application\Command\*': command_bus
+            'App\Application\Query\*': query_bus
 ```
+
+### Injecting the native buses directly
+
+You don't need the wrapper interfaces below — Symfony registers each bus as
+`messenger.bus.<name>`. Inject them with `#[Autowire]` and type
+`MessageBusInterface`:
+
+```php
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Messenger\HandleTrait;
+use Symfony\Component\Messenger\MessageBusInterface;
+
+class OrderController extends AbstractController
+{
+    public function __construct(
+        #[Autowire('@messenger.bus.command_bus')]
+        private MessageBusInterface $commandBus,
+        #[Autowire('@messenger.bus.query_bus')]
+        private MessageBusInterface $queryBus,
+    ) {}
+}
+```
+
+To get the handler's return value synchronously (queries), use `HandleTrait`
+in a thin service as shown in the next section.
 
 ### Bus Interfaces
 

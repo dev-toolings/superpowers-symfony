@@ -156,6 +156,85 @@ class UserCard
 </div>
 ```
 
+## readonly caveat
+
+Do **not** mark a Twig component class or its public props as `readonly`: props
+are assigned *after* instantiation, so a readonly public prop throws. Inject
+services as `private readonly`, but keep public props mutable.
+
+```php
+#[AsTwigComponent]
+class Alert
+{
+    public function __construct(
+        private readonly LoggerInterface $logger,   // services: readonly OK
+    ) {}
+
+    public string $type = 'info';   // props: must stay mutable, no readonly
+    public string $message = '';
+}
+```
+
+If the class must be `readonly`, assign the props inside `mount()` instead.
+
+## Anonymous Components
+
+A component with no PHP class — the name comes from the template path. Declare
+its props with `{% props %}`:
+
+```twig
+{# templates/components/Button.html.twig #}
+{% props variant = 'primary', label %}
+<button class="btn btn-{{ variant }}" {{ attributes }}>{{ label }}</button>
+```
+
+```twig
+<twig:Button variant="danger" label="Delete" type="submit" />
+```
+
+## CVA (Class Variant Authority)
+
+Manage Tailwind/utility class variants with `html_cva` (from
+`twig/html-extra` >= 3.12) and merge conflicting classes with `|tailwind_merge`:
+
+```twig
+{# templates/components/Badge.html.twig #}
+{% set badge = html_cva(
+    base: 'inline-flex items-center rounded px-2 py-1 text-xs font-medium',
+    variants: {
+        color: { gray: 'bg-gray-100 text-gray-800', red: 'bg-red-100 text-red-800' },
+        size:  { sm: 'text-xs', md: 'text-sm' },
+    }
+) %}
+<span class="{{ badge.apply({color, size}, attributes.render('class'))|tailwind_merge }}">
+    {{ label }}
+</span>
+```
+
+## Testing Components
+
+```php
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\UX\TwigComponent\Test\InteractsWithTwigComponents;
+
+final class AlertTest extends KernelTestCase
+{
+    use InteractsWithTwigComponents;
+
+    public function testMount(): void
+    {
+        $component = $this->mountTwigComponent(name: 'Alert', data: ['message' => 'Hi']);
+        self::assertSame('info', $component->type);
+    }
+
+    public function testRender(): void
+    {
+        $rendered = $this->renderTwigComponent(name: 'Alert', data: ['message' => 'Hi']);
+        self::assertStringContainsString('Hi', (string) $rendered);
+    }
+}
+```
+
 ## Live Components (Reactive)
 
 ### Counter Example

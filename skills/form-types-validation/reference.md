@@ -361,6 +361,71 @@ public function register(Request $request): Response
 }
 ```
 
+> **HTTP 422 on invalid submit (Symfony 8.0+):** pass the *form* (not
+> `$form->createView()`) to `render()`. When the form was submitted and is
+> invalid, Symfony automatically sets the response status to
+> **422 Unprocessable Content** (Turbo-compatible) instead of 200. The snippet
+> above already passes `'form' => $form`, so it benefits from this.
+
+## Recent Constraints
+
+```php
+use Symfony\Component\Validator\Constraints as Assert;
+
+class ChangePassword
+{
+    // Strong password without a regex (weak | medium | strong | very_strong)
+    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_STRONG)]
+    #[Assert\NotCompromisedPassword]
+    public string $newPassword;
+
+    // Run constraints in order, stopping at the first violation
+    #[Assert\Sequentially([
+        new Assert\NotBlank(),
+        new Assert\Length(min: 3),
+        new Assert\Regex('/^[a-z0-9_]+$/'),
+    ])]
+    public string $username;
+
+    // Conditional validation
+    #[Assert\When(
+        expression: 'this.type === "company"',
+        constraints: [new Assert\NotBlank(), new Assert\Length(max: 14)],
+    )]
+    public ?string $vatNumber = null;
+
+    public string $type = 'individual';
+}
+```
+
+## Multi-Step Forms (Symfony 8.1+ — verify)
+
+```php
+// Build a form spread across several steps from a single object.
+$form = $this->createFormFlowBuilder($task)->getForm();
+```
+
+## Custom Violation Mapper (Symfony 8.1+ — verify)
+
+Override how constraint violations are mapped onto form fields by implementing
+`ViolationMapperInterface`; it is auto-registered as the `form.violation_mapper`
+service.
+
+```php
+use Symfony\Component\Form\Util\ViolationMapperInterface;
+
+class CustomViolationMapper implements ViolationMapperInterface
+{
+    public function mapViolation(
+        ConstraintViolation $violation,
+        FormInterface $form,
+        bool $allowNonSynchronized = false,
+    ): void {
+        // custom mapping
+    }
+}
+```
+
 ## Best Practices
 
 1. **Constraints on entities**: Primary validation source

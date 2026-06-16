@@ -300,6 +300,46 @@ class StripeService
 config/secrets/*/decrypt.private.php
 ```
 
+## Assets — AssetMapper (best practice)
+
+The recommended way to ship frontend assets is **AssetMapper** (no Node bundler,
+uses native ESM + importmaps). It is the default in modern Symfony.
+
+```bash
+composer require symfony/asset-mapper
+php bin/console importmap:require bootstrap   # add a JS package
+php bin/console importmap:audit               # security audit of pinned packages
+php bin/console asset-map:compile             # build for production deploy
+```
+
+```yaml
+# config/packages/asset_mapper.yaml
+framework:
+    asset_mapper:
+        paths:
+            - assets/
+```
+
+```twig
+{# templates/base.html.twig #}
+{{ importmap('app') }}
+```
+
+## Refreshable Env Vars (8.1+ — verify)
+
+For long-running workers, inject an env var as a `\Closure` so it re-reads the
+value between runs instead of freezing it at boot:
+
+```php
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+public function __construct(
+    #[Autowire(env: 'FEATURE_FLAGS')] private \Closure $featureFlags,  // ($this->featureFlags)()
+) {}
+```
+
+YAML equivalent: `!env_closure '%env(FEATURE_FLAGS)%'`.
+
 ## Debug Configuration
 
 ```bash

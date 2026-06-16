@@ -225,15 +225,78 @@ public function contact(
 }
 ```
 
-### ParamConverter for Entities
+### EntityValueResolver for Entities
+
+The legacy SensioFrameworkExtraBundle `ParamConverter` is gone; Doctrine's
+built-in `EntityValueResolver` maps route parameters to entities automatically.
 
 ```php
-// Symfony automatically converts {id} to Post entity
+// {id} is resolved to the Post entity by the EntityValueResolver
 #[Route('/posts/{id}', methods: ['GET'])]
 public function show(Post $post): Response
 {
     // 404 handled automatically if not found
     return $this->render('post/show.html.twig', ['post' => $post]);
+}
+```
+
+Use `#[MapEntity]` to control the lookup (non-id field, custom expression, etc.):
+
+```php
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+
+#[Route('/posts/{slug}', methods: ['GET'])]
+public function showBySlug(
+    #[MapEntity(mapping: ['slug' => 'slug'])] Post $post,
+): Response {
+    return $this->render('post/show.html.twig', ['post' => $post]);
+}
+```
+
+### Inject per-argument, never pull from the container
+
+Type-hint the services you need as action arguments (or constructor args). Don't
+reach into the container with `$this->container->get(...)` / `$this->get(...)` —
+that hides dependencies and breaks autowiring/testing.
+
+```php
+// GOOD — explicit, autowired, testable
+#[Route('/reports', methods: ['GET'])]
+public function reports(ReportBuilder $reports): Response
+{
+    return $this->json($reports->forCurrentUser($this->getUser()));
+}
+
+// BAD
+// $reports = $this->container->get(ReportBuilder::class);
+```
+
+### Console: invokable commands (no base class)
+
+The same "thin entry point + service" discipline applies to commands. Since
+Symfony 7.3 an `#[AsCommand]` class with `__invoke()` no longer needs to extend
+`Command`:
+
+```php
+use Symfony\Component\Console\Attribute\Argument;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+#[AsCommand(name: 'app:create-user', description: 'Creates a user.')]
+final class CreateUserCommand
+{
+    public function __construct(private UserService $users) {}
+
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Argument('The username.')] string $username,
+    ): int {
+        $this->users->create($username);
+        $io->success("Created {$username}");
+
+        return Command::SUCCESS;
+    }
 }
 ```
 
