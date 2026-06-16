@@ -1,6 +1,6 @@
 # Superpowers Symfony — Claude Code plugin for Symfony 7.4 LTS & 8.x
 
-> **Symfony AI development superpowers for [Claude Code](https://www.anthropic.com/claude-code).** 44 expert skills, 4 specialized subagents, and 13 slash commands covering **API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Symfony Messenger, security/voters, and DDD / hexagonal architecture**.
+> **Symfony AI development superpowers for [Claude Code](https://www.anthropic.com/claude-code).** 44 expert skills, 7 specialized subagents, and 13 slash commands covering **API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Symfony Messenger, security/voters, and DDD / hexagonal architecture**.
 
 ![Symfony](https://img.shields.io/badge/Symfony-7.4_LTS_%7C_8.x-000000?logo=symfony&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.2–8.4-777BB4?logo=php&logoColor=white)
@@ -12,7 +12,7 @@
 
 ## Features
 
-- **Specialized Agents** - 4 subagents with skill preloading and project memory
+- **Specialized Agents** - 7 subagents with skill preloading and project memory
 - **TDD Workflows** - RED-GREEN-REFACTOR with Pest PHP or PHPUnit
 - **Doctrine Mastery** - Relations, migrations, transactions, Foundry fixtures
 - **API Platform** - Resources, filters, serialization, versioning, DTOs
@@ -235,10 +235,13 @@ superpowers-symfony/
 ├── .claude-plugin/
 │   ├── marketplace.json      # Marketplace catalog
 │   └── plugin.json           # Plugin manifest
-├── agents/                   # 4 specialized subagents
+├── agents/                   # 7 specialized subagents
 │   ├── symfony-reviewer.md
 │   ├── symfony-tdd-coach.md
+│   ├── symfony-engineer.md
+│   ├── symfony-security-auditor.md
 │   ├── doctrine-architect.md
+│   ├── doctrine-performance-optimizer.md
 │   └── api-platform-builder.md
 ├── skills/                   # 44 skill definitions
 │   ├── tdd-with-pest/
