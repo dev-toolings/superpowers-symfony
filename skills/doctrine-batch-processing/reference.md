@@ -13,7 +13,7 @@ foreach ($products as $product) {
 // Out of Memory with large datasets!
 ```
 
-## Solution 1: Iterate
+## Solution 1: Iterate with toIterable()
 
 ```php
 <?php
@@ -28,6 +28,11 @@ foreach ($query->toIterable() as $product) {
     $em->clear();
 }
 ```
+
+> **ORM 3 breaking change**: `Query#iterate()` was deprecated in ORM 2.7 and
+> **removed in ORM 3.0**. Use `toIterable()` (available since 2.7, the only
+> option in 3.x/4.x). You cannot iterate a query that fetch-joins a
+> collection-valued association.
 
 ## Solution 2: Batch with Clear
 
@@ -95,6 +100,29 @@ class BatchProcessor
 }
 ```
 
+## Solution 3b: DQL Bulk UPDATE / DELETE
+
+For mass updates/deletes, a single DQL `UPDATE`/`DELETE` statement is the most
+efficient — it bypasses hydration and the unit of work entirely:
+
+```php
+<?php
+
+// Bulk update — runs one SQL UPDATE, no entities loaded
+$updated = $em->createQuery(
+    'UPDATE App\Entity\Product p SET p.price = p.price * 0.9 WHERE p.discontinued = true'
+)->execute();
+
+// Bulk delete
+$deleted = $em->createQuery(
+    'DELETE App\Entity\Product p WHERE p.createdAt < :cutoff'
+)->setParameter('cutoff', new \DateTimeImmutable('-1 year'))
+ ->execute();
+```
+
+DQL UPDATE/DELETE do **not** trigger lifecycle events or update already-managed
+objects in memory — clear or re-fetch afterwards if you keep working with them.
+
 ## Solution 4: DBAL for Bulk Updates
 
 ```php
@@ -148,7 +176,11 @@ class BulkInserter
 
     public function importProducts(array $data): void
     {
-        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+        // NOTE: in ORM 2.x you would call
+        // $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+        // to avoid memory growth. That method is DEPRECATED in DBAL 3+ and gone
+        // in DBAL 4 (logging moved to PSR-3 middleware). On ORM 3 / DBAL 4 you
+        // disable logging via configuration instead of this call.
 
         $batches = array_chunk($data, self::BATCH_SIZE);
 
@@ -242,10 +274,17 @@ class ProcessProductsCommand extends Command
 
 1. **Clear regularly**: `$em->clear()` releases memory
 2. **Use toIterable()**: Don't load all results at once
-3. **DBAL for bulk updates**: Skip ORM for simple updates
+3. **DQL UPDATE/DELETE or DBAL for bulk writes**: Skip hydration for mass updates
 4. **Monitor memory**: Log memory usage in long processes
-5. **Disable SQL logger**: In batch processes
+5. **Disable SQL logging**: Via config/middleware on DBAL 4 (`setSQLLogger()` is gone)
 6. **Progress feedback**: Use SymfonyStyle progress bars
+
+## Applicability
+
+- **ORM 3.x / DBAL 4.x** (target): `toIterable()` only; `Query#iterate()` removed;
+  `setSQLLogger()` removed (PSR-3 middleware instead).
+- **ORM 2.7+ (legacy)**: `toIterable()` available alongside the deprecated
+  `iterate()`; prefer `toIterable()`.
 
 
 ## Skill Operating Checklist

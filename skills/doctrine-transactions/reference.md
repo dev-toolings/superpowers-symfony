@@ -68,9 +68,10 @@ class OrderService
 }
 ```
 
-### Using Transactional Helper
+### Using the wrapInTransaction Helper
 
-Cleaner approach:
+Cleaner approach. `wrapInTransaction()` flushes before commit and closes the
+EntityManager if the callback throws:
 
 ```php
 public function createOrder(User $user, array $items): Order
@@ -89,6 +90,27 @@ public function createOrder(User $user, array $items): Order
     });
 }
 ```
+
+> **ORM 3 breaking change**: `EntityManager::transactional()` was deprecated in
+> ORM 2.9 and **removed in ORM 3.0**. Use `wrapInTransaction()` (available since
+> ORM 2.9). They share the same signature, so the migration is a rename. Any
+> remaining `$em->transactional(...)` call will fatal on ORM 3.x.
+
+### DBAL-level Transactions
+
+On the DBAL `Connection`, `transactional()` is **not** affected by the ORM 3
+removal — it remains valid for raw SQL / DML that does not go through the
+EntityManager:
+
+```php
+use Doctrine\DBAL\Connection;
+
+$connection->transactional(function (Connection $conn): void {
+    $conn->executeStatement('UPDATE product SET price = price * 0.9');
+});
+```
+
+Note this does not flush the ORM unit of work — use it only for DBAL-level work.
 
 ## Flush Strategies
 
@@ -151,7 +173,9 @@ class UserController
 
 ## Optimistic Locking
 
-Prevent concurrent modification conflicts:
+Prevent concurrent modification conflicts with a `#[ORM\Version]` column
+(`integer` or `datetime`/`datetime_immutable`). Version numbers are preferred
+over timestamps in high-concurrency scenarios:
 
 ```php
 <?php
@@ -297,7 +321,7 @@ $this->em->clear(User::class);
 
 1. **Single flush per operation**: Group related changes
 2. **Service layer transactions**: Controllers don't manage transactions
-3. **Use wrapInTransaction**: Cleaner than try/catch
+3. **Use `wrapInTransaction()`**: Cleaner than try/catch (replaces the removed `transactional()`)
 4. **Optimistic locking**: For concurrent editing scenarios
 5. **Clear after rollback**: Reset EntityManager state
 6. **Short transactions**: Don't hold locks too long
@@ -317,6 +341,14 @@ class OrderService
     }
 }
 ```
+
+## Applicability
+
+- **ORM 3.x / DBAL 4.x** (target): `wrapInTransaction()` only;
+  `EntityManager::transactional()` no longer exists.
+- **ORM 2.9+ (legacy)**: both `wrapInTransaction()` and `transactional()` exist;
+  prefer `wrapInTransaction()` so the code survives the 3.0 upgrade.
+- `Connection::transactional()` (DBAL) is valid across all versions.
 
 
 ## Skill Operating Checklist

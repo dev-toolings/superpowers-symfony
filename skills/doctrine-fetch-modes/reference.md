@@ -46,21 +46,22 @@ $slice = $post->getComments()->slice(0, 5); // LIMIT query
 
 ## Query-Level Fetch Mode
 
-Override mapping fetch mode per query:
+> **ORM 3 note**: `Query::setFetchMode()` was removed. The portable, explicit
+> way to eager-load a relation for a single query is a fetch join (`addSelect`
+> + `leftJoin`, see below) rather than a per-query fetch-mode override.
 
 ```php
 <?php
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-
-// In repository
+// In repository — fetch join is the ORM 3 replacement for per-query EAGER
 public function findWithAuthor(int $id): ?Post
 {
     return $this->createQueryBuilder('p')
+        ->addSelect('a')
+        ->leftJoin('p.author', 'a')
         ->where('p.id = :id')
         ->setParameter('id', $id)
         ->getQuery()
-        ->setFetchMode(Post::class, 'author', ClassMetadata::FETCH_EAGER)
         ->getOneOrNullResult();
 }
 ```
@@ -97,21 +98,35 @@ public function findByIdWithAuthor(int $id): ?Post
 }
 ```
 
-## Partial Objects (Select Columns)
+## Loading Only the Columns You Need (DTO hydration)
 
-Load only needed columns:
+> **ORM 3 breaking change**: the `partial` DQL keyword and
+> `Query::HINT_FORCE_PARTIAL_LOAD` were deprecated in ORM 2.x and **removed in
+> ORM 3.0**. `SELECT PARTIAL p.{id, title}` no longer parses. Use explicit DTO
+> (`SELECT NEW`) hydration instead — it is faster, type-safe, and the partial
+> object footguns (uninitialized fields, broken change tracking) are gone.
+
+Define a plain DTO and project into it with `SELECT NEW`:
 
 ```php
-public function findPostTitles(): array
-{
-    return $this->createQueryBuilder('p')
-        ->select('PARTIAL p.{id, title, createdAt}')
-        ->getQuery()
-        ->getResult();
-}
+<?php
+// src/Dto/PostListItem.php
 
-// Or with NEW DTO
-public function findPostDTOs(): array
+final class PostListItem
+{
+    public function __construct(
+        public readonly int $id,
+        public readonly string $title,
+        public readonly string $authorName,
+    ) {}
+}
+```
+
+```php
+// src/Repository/PostRepository.php
+
+/** @return PostListItem[] */
+public function findPostListItems(): array
 {
     return $this->createQueryBuilder('p')
         ->select('NEW App\Dto\PostListItem(p.id, p.title, a.name)')
@@ -120,6 +135,9 @@ public function findPostDTOs(): array
         ->getResult();
 }
 ```
+
+The constructor argument order must match the `NEW` argument order. The result
+is an array of `PostListItem`, not managed entities — ideal for read-only lists.
 
 ## Batch Processing with Iteration
 
@@ -236,10 +254,39 @@ public function findForDisplay(): array
 1. **Default to LAZY**: Most relations don't need eager loading
 2. **EXTRA_LAZY for large collections**: count(), contains(), slice()
 3. **Join fetch in repositories**: Explicit control over loading
-4. **Avoid EAGER on mapping**: Query-specific is better
-5. **Use partial/DTO for lists**: Don't load full entities
-6. **Batch with iterable()**: For large dataset processing
+4. **Avoid EAGER on mapping**: Fetch join in the query is better
+5. **DTO (`SELECT NEW`) for lists**: Replaces the removed `partial` keyword
+6. **Batch with `toIterable()`**: For large dataset processing
 7. **Profile queries**: Use Symfony profiler to spot N+1
+
+## DBAL 4 — method-based API
+
+When you drop to raw SQL (reports, projections, bulk reads), DBAL 4 is
+method-based. The old `query()` / `exec()` / `fetchAll()` were removed:
+
+```php
+use Doctrine\DBAL\Connection;
+
+// Reads
+$rows  = $connection->fetchAllAssociative('SELECT id, title FROM post');
+$row   = $connection->fetchAssociative('SELECT * FROM post WHERE id = ?', [$id]);
+$value = $connection->fetchOne('SELECT COUNT(*) FROM post');
+$stmt  = $connection->executeQuery('SELECT * FROM post WHERE status = ?', [$status]);
+
+// Writes (returns affected-row count)
+$affected = $connection->executeStatement(
+    'UPDATE post SET status = ? WHERE status = ?',
+    ['archived', 'draft'],
+);
+```
+
+## Applicability
+
+- **ORM 3.x / DBAL 4.x** (target): no `partial` keyword,
+  no `HINT_FORCE_PARTIAL_LOAD`, no `Query::setFetchMode()`; use `SELECT NEW`
+  DTOs and fetch joins. DBAL `query()`/`exec()`/`fetchAll()` removed.
+- **ORM 2.x (legacy)**: `partial` still parses but is deprecated — migrate to
+  DTO hydration before upgrading to 3.0.
 
 
 ## Skill Operating Checklist
