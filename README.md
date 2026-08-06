@@ -6,7 +6,7 @@
 ![PHP](https://img.shields.io/badge/PHP-8.2–8.4-777BB4?logo=php&logoColor=white)
 ![API Platform](https://img.shields.io/badge/API_Platform-v4-38A9DB)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?logo=anthropic&logoColor=white)
-![License: MIT](https://img.shields.io/github/license/MakFly/superpowers-symfony)
+![License: MIT](https://img.shields.io/github/license/dev-toolings/superpowers-symfony)
 
 **Superpowers Symfony** is a Claude Code plugin that gives AI coding agents deep, version-accurate **Symfony** expertise — from **Doctrine** schema design and **API Platform** REST/GraphQL APIs to **test-driven development**, async **Messenger** workflows, caching, rate limiting, and clean architecture. It targets **Symfony 7.4 LTS and 8.x** (6.4 LTS supported as legacy), **API Platform v4** (v3 legacy), and **Doctrine ORM 3** — so the guidance, signatures, and code examples match the framework you actually run.
 
@@ -29,7 +29,7 @@
 
 ```bash
 # Add the marketplace
-/plugin marketplace add MakFly/superpowers-symfony
+/plugin marketplace add dev-toolings/superpowers-symfony
 
 # Install the plugin
 /plugin install superpowers-symfony@superpowers-symfony
@@ -45,7 +45,7 @@ Add to your project's `.claude/settings.json`:
     "superpowers-symfony": {
       "source": {
         "source": "github",
-        "repo": "MakFly/superpowers-symfony"
+        "repo": "dev-toolings/superpowers-symfony"
       }
     }
   },
@@ -301,8 +301,8 @@ Inspired by [superpowers-laravel](https://github.com/jpcaparas/superpowers-larav
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/MakFly/superpowers-symfony/issues)
-- Discussions: [GitHub Discussions](https://github.com/MakFly/superpowers-symfony/discussions)
+- Issues: [GitHub Issues](https://github.com/dev-toolings/superpowers-symfony/issues)
+- Discussions: [GitHub Discussions](https://github.com/dev-toolings/superpowers-symfony/discussions)
 
 ---
 
