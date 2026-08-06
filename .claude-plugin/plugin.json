@@ -6,8 +6,8 @@
     "name": "MakFly"
   },
   "license": "MIT",
-  "homepage": "https://github.com/MakFly/superpowers-symfony",
-  "repository": "https://github.com/MakFly/superpowers-symfony.git",
+  "homepage": "https://github.com/dev-toolings/superpowers-symfony",
+  "repository": "https://github.com/dev-toolings/superpowers-symfony.git",
   "keywords": [
     "symfony",
     "php",

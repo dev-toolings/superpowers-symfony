@@ -20,8 +20,8 @@
       "author": {
         "name": "MakFly"
       },
-      "homepage": "https://github.com/MakFly/superpowers-symfony",
-      "repository": "https://github.com/MakFly/superpowers-symfony",
+      "homepage": "https://github.com/dev-toolings/superpowers-symfony",
+      "repository": "https://github.com/dev-toolings/superpowers-symfony",
       "license": "MIT",
       "keywords": [
         "symfony",
