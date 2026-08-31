@@ -7,7 +7,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-description: Run code quality tools: PHP-CS-Fixer for style, PHPStan for static analysis, and type safety checks
+description: "Run code quality tools: PHP-CS-Fixer for style, PHPStan for static analysis, and type safety checks"
 ---
 
 # Quality Checks (Symfony)
