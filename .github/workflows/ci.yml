@@ -69,8 +69,11 @@ jobs:
           status=0
           while IFS= read -r -d '' file; do
             dir=$(dirname "$file")
-            # relative markdown links only; skip http(s), anchors and mailto
-            grep -oE '\]\([^)#][^)]*\)' "$file" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//' | while read -r target; do
+            # `grep` exits 1 on a file with no relative links, which pipefail
+            # would turn into a job failure, hence the `|| true`.
+            links=$(grep -oE '\]\([^)#][^)]*\)' "$file" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//' || true)
+            [ -z "$links" ] && continue
+            while IFS= read -r target; do
               case "$target" in
                 http*|mailto:*|'#'*) continue ;;
               esac
@@ -78,8 +81,9 @@ jobs:
               [ -z "$target" ] && continue
               if [ ! -e "$dir/$target" ] && [ ! -e "$target" ]; then
                 echo "::error file=$file::broken relative link: $target"
-                exit 1
+                status=1
               fi
-            done || status=1
+            done <<< "$links"
           done < <(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*' -print0)
+          if [ "$status" -eq 0 ]; then echo "no broken relative links"; fi
           exit $status
