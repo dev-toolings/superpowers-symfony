@@ -1,0 +1,6 @@
+# Generated adapters — collapsed in GitHub diffs, excluded from language stats.
+dist/**              linguist-generated=true
+AGENTS.md            linguist-generated=true
+skills-map.md        linguist-generated=true
+skills-map-lite.md   linguist-generated=true
+bun.lock             linguist-generated=true

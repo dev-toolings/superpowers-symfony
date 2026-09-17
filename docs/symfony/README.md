@@ -1,40 +1,44 @@
 # Symfony Documentation
 
-This directory contains framework-specific documentation for modern Symfony development patterns.
+Long-form framework documentation. Most of the depth lives in the skill library
+itself: each skill under `content/skills/<name>/` ships a `reference.md` with the
+implementation detail. This directory holds the few topics that are too broad to
+belong to a single skill.
 
-## Contents
+## In this directory
 
-### API Platform
-- [API Platform Overview](api-platform.md) - Resource configuration, operations, and best practices
-- [State Providers & Processors](state-providers-processors.md) - Custom data retrieval and persistence
-- [DTO Resources](dto-resources.md) - API design decoupled from entities
+- [API Platform Overview](api-platform.md) — resource configuration, operations, and best practices
+- [State Providers & Processors](state-providers-processors.md) — custom data retrieval and persistence
+- [DTO Resources](dto-resources.md) — API design decoupled from entities
 
-### Doctrine ORM
-- [Entity Relationships](doctrine-relationships.md) - OneToMany, ManyToMany, and eager loading
-- [Transactions](doctrine-transactions.md) - Consistency and rollback strategies
-- [Performance](doctrine-performance.md) - Fetch modes, batch processing, indexing
+## In the skill library
 
-### Symfony Core
-- [Messenger](messenger.md) - Async processing, handlers, retry strategies
-- [Security](security.md) - Voters, access control, firewalls
-- [Cache](cache.md) - Cache pools, tags, HTTP caching
+| Topic | Skill reference |
+|---|---|
+| Entity relationships | [`doctrine-relations`](../../content/skills/doctrine-relations/reference.md) |
+| Transactions and locking | [`doctrine-transactions`](../../content/skills/doctrine-transactions/reference.md) |
+| Fetch modes and hydration | [`doctrine-fetch-modes`](../../content/skills/doctrine-fetch-modes/reference.md) |
+| Batch processing | [`doctrine-batch-processing`](../../content/skills/doctrine-batch-processing/reference.md) |
+| Async messaging | [`symfony-messenger`](../../content/skills/symfony-messenger/reference.md) |
+| Authorization and voters | [`symfony-voters`](../../content/skills/symfony-voters/reference.md) |
+| Caching | [`symfony-cache`](../../content/skills/symfony-cache/reference.md) |
+| Ports & adapters | [`ports-and-adapters`](../../content/skills/ports-and-adapters/reference.md) |
+| CQRS | [`cqrs-and-handlers`](../../content/skills/cqrs-and-handlers/reference.md) |
+| Value objects and DTOs | [`value-objects-and-dtos`](../../content/skills/value-objects-and-dtos/reference.md) |
+| TDD with Pest | [`tdd-with-pest`](../../content/skills/tdd-with-pest/reference.md) |
+| TDD with PHPUnit | [`tdd-with-phpunit`](../../content/skills/tdd-with-phpunit/reference.md) |
+| Functional tests | [`functional-tests`](../../content/skills/functional-tests/reference.md) |
+| API tests | [`api-platform-tests`](../../content/skills/api-platform-tests/reference.md) |
 
-### Architecture
-- [Hexagonal Architecture](hexagonal.md) - Ports & Adapters pattern
-- [CQRS](cqrs.md) - Command/Query separation
-- [Value Objects](value-objects.md) - Immutable domain objects
-
-### Testing
-- [TDD Workflow](tdd.md) - RED-GREEN-REFACTOR cycle
-- [Functional Tests](functional-tests.md) - WebTestCase patterns
-- [API Tests](api-tests.md) - Testing API Platform resources
+The full index is in [`AGENTS.md`](../../AGENTS.md) and [`skills-map.md`](../../skills-map.md).
 
 ## Supported Versions
 
 | Component | Versions |
 |-----------|----------|
-| Symfony | 6.4 LTS, 7.x, 8.0 |
-| API Platform | 3.x, 4.x |
+| Symfony | 7.4 LTS, 8.x (6.4 LTS as legacy) |
+| API Platform | 4.x (3.x legacy) |
+| Doctrine ORM | 3.x |
 | PHP | 8.2, 8.3, 8.4 |
 
 ## Quick Links

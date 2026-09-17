@@ -1,10 +1,10 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env bun
 
 import fs from 'fs';
 import path from 'path';
 
 const ROOT = path.resolve(__dirname, '..');
-const SKILLS = path.join(ROOT, 'skills');
+const SKILLS = path.join(ROOT, 'content', 'skills');
 const requiredSections = ['## Use when', '## Default workflow', '## Guardrails', '## Output contract', '## References'];
 
 let failed = false;

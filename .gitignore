@@ -9,3 +9,7 @@ sniffer/
 .env
 .env.local
 .env.*.local
+
+# Build scratch
+dist/.tmp/
+.DS_Store

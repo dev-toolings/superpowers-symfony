@@ -1,6 +1,6 @@
-# Skills Best Practices (Claude Code)
+# Skills Best Practices
 
-This repository's skills now follow a shared structure aligned with Claude Code skill guidance:
+This repository's skills follow a shared structure aligned with the open Agent Skills layout:
 
 - Clear trigger intent in `description`
 - Focused workflow with deterministic steps
@@ -19,7 +19,7 @@ This repository's skills now follow a shared structure aligned with Claude Code 
 
 Run:
 
-`npx tsx scripts/validate_skills.ts`
-`npx tsx scripts/lint_skill_content.ts`
+`bun run validate`
+`bun run lint`
 
 This keeps skill structure consistent and descriptions non-generic.

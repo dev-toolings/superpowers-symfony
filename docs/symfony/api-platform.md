@@ -197,7 +197,7 @@ class Product
 
 ## Filters
 
-See dedicated [Filters documentation](../skills/api-platform-filters/SKILL.md).
+See dedicated [Filters documentation](../../content/skills/api-platform-filters/SKILL.md).
 
 ```php
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -312,8 +312,8 @@ api_platform:
 
 ## Related Skills
 
-- [API Platform Filters](../skills/api-platform-filters/SKILL.md)
-- [API Platform Serialization](../skills/api-platform-serialization/SKILL.md)
-- [API Platform Security](../skills/api-platform-security/SKILL.md)
+- [API Platform Filters](../../content/skills/api-platform-filters/SKILL.md)
+- [API Platform Serialization](../../content/skills/api-platform-serialization/SKILL.md)
+- [API Platform Security](../../content/skills/api-platform-security/SKILL.md)
 - [State Providers & Processors](state-providers-processors.md)
 - [DTO Resources](dto-resources.md)
