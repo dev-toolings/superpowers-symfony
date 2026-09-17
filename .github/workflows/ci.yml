@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate pivot and artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Validate the pivot and the generated artifacts
+        run: bun run validate
+
+      - name: Lint skill content
+        run: bun run lint
+
+  drift:
+    name: Generated files are up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Check that dist/ matches content/
+        run: bun run check
+
+  plugin-validate:
+    name: Claude Code packaging
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Validate the plugin manifest
+        run: |
+          npx --yes @anthropic-ai/claude-code plugin validate . || {
+            echo "::warning::claude plugin validate unavailable or failed; the manifest is also checked by bun run validate"
+            exit 0
+          }
+
+  links:
+    name: Markdown links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check for broken relative links
+        run: |
+          set -euo pipefail
+          status=0
+          while IFS= read -r -d '' file; do
+            dir=$(dirname "$file")
+            # relative markdown links only; skip http(s), anchors and mailto
+            grep -oE '\]\([^)#][^)]*\)' "$file" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//' | while read -r target; do
+              case "$target" in
+                http*|mailto:*|'#'*) continue ;;
+              esac
+              target="${target%%#*}"
+              [ -z "$target" ] && continue
+              if [ ! -e "$dir/$target" ] && [ ! -e "$target" ]; then
+                echo "::error file=$file::broken relative link: $target"
+                exit 1
+              fi
+            done || status=1
+          done < <(find . -name '*.md' -not -path './node_modules/*' -not -path './.git/*' -print0)
+          exit $status

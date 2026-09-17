@@ -5,18 +5,18 @@
     "email": "contact@devaubree.fr"
   },
   "metadata": {
-    "description": "A Claude Code plugin providing Symfony-specific guidance, skills, and workflows for TDD, Doctrine, API Platform, Messenger, and more.",
-    "version": "1.0.0"
+    "description": "A Symfony skill library for coding agents: guidance, skills, agents and workflows for TDD, Doctrine, API Platform, Messenger, and more.",
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "superpowers-symfony",
       "source": {
         "source": "github",
-        "repo": "MakFly/superpowers-symfony"
+        "repo": "dev-toolings/superpowers-symfony"
       },
-      "description": "Symfony-focused toolkit for Claude Code: TDD (Pest/PHPUnit), Doctrine ORM, API Platform, Messenger, Voters, quality checks, architecture patterns, and specialized subagents",
-      "version": "1.0.0",
+      "description": "Symfony toolkit for coding agents: TDD (Pest/PHPUnit), Doctrine ORM, API Platform, Messenger, Voters, quality checks, architecture patterns, and specialized agents",
+      "version": "0.2.0",
       "author": {
         "name": "MakFly"
       },

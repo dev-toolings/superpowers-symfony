@@ -1,0 +1,125 @@
+name: Test symfony-context CLI
+
+on:
+  push:
+    paths: ['bin/**', 'hooks/**', '.github/workflows/test-context-cli.yml']
+  pull_request:
+    paths: ['bin/**', 'hooks/**', '.github/workflows/test-context-cli.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Make scripts executable
+        run: chmod +x bin/symfony-context hooks/session-start.sh
+
+      - name: Syntax check under the default and the system shell
+        run: |
+          set -euo pipefail
+          bash -n bin/symfony-context
+          bash -n hooks/session-start.sh
+          # macOS ships bash 3.2.57; this is the guard against bash 4+ builtins
+          # such as `mapfile` creeping back into the script.
+          if [ -x /bin/bash ]; then
+            /bin/bash --version | head -1
+            /bin/bash -n bin/symfony-context
+            /bin/bash -n hooks/session-start.sh
+          fi
+
+      - name: Silence when there is no Symfony application
+        run: |
+          set -euo pipefail
+          empty=$(mktemp -d)
+          for fmt in json markdown env; do
+            out=$(cd "$empty" && /bin/bash "$GITHUB_WORKSPACE/bin/symfony-context" --format="$fmt")
+            if [ -n "$out" ]; then
+              echo "::error::--format=$fmt produced output with no Symfony app: $out"
+              exit 1
+            fi
+          done
+          echo "silent on an empty directory, as expected"
+
+      - name: Detect a mock Symfony application
+        env:
+          SUPERPOWERS_TEST_DOCKER_RUNNING: 'true'
+        run: |
+          set -euo pipefail
+          app=$(mktemp -d)/app
+          mkdir -p "$app/bin"
+          touch "$app/bin/console"
+          cat > "$app/composer.json" <<'EOF'
+          {
+            "name": "test/symfony-app",
+            "require": { "symfony/framework-bundle": "^7.4", "api-platform/core": "^4.0" },
+            "require-dev": { "pestphp/pest": "^4.0" }
+          }
+          EOF
+          cat > "$app/compose.yaml" <<'EOF'
+          services:
+            php:
+              image: dunglas/frankenphp
+          EOF
+
+          cd "$app"
+          json=$(/bin/bash "$GITHUB_WORKSPACE/bin/symfony-context" --format=json)
+          echo "$json"
+
+          jq -e . >/dev/null <<<"$json" || { echo "::error::--format=json is not valid JSON"; exit 1; }
+          test "$(jq -r '.symfony.version' <<<"$json")" = "7.4"      || { echo "::error::wrong Symfony version"; exit 1; }
+          test "$(jq -r '.symfony.is_lts' <<<"$json")" = "true"      || { echo "::error::7.4 must be flagged LTS"; exit 1; }
+          test "$(jq -r '.api_platform.installed' <<<"$json")" = "true" || { echo "::error::API Platform not detected"; exit 1; }
+          test "$(jq -r '.test_framework' <<<"$json")" = "pest"      || { echo "::error::Pest not detected"; exit 1; }
+          test "$(jq -r '.docker.is_symfony_docker' <<<"$json")" = "true" || { echo "::error::Symfony Docker not detected"; exit 1; }
+
+          # The test command must follow the detected framework, not default to PHPUnit.
+          case "$(jq -r '.commands.test' <<<"$json")" in
+            *vendor/bin/pest) : ;;
+            *) echo "::error::test command ignores the detected framework"; exit 1 ;;
+          esac
+
+          md=$(/bin/bash "$GITHUB_WORKSPACE/bin/symfony-context" --format=markdown)
+          grep -q '^## Symfony project context' <<<"$md" || { echo "::error::markdown header missing"; exit 1; }
+          if jq -e . >/dev/null 2>&1 <<<"$md"; then
+            echo "::error::markdown output parses as JSON; SessionStart would treat it as structured output"
+            exit 1
+          fi
+
+          env_out=$(/bin/bash "$GITHUB_WORKSPACE/bin/symfony-context" --format=env)
+          grep -q '^SYMFONY_VERSION=7.4$' <<<"$env_out" || { echo "::error::env output missing SYMFONY_VERSION"; exit 1; }
+
+      - name: Reject an unknown format
+        run: |
+          set +e
+          /bin/bash bin/symfony-context --format=xml >/dev/null 2>&1
+          rc=$?
+          set -e
+          test "$rc" -eq 64 || { echo "::error::expected exit 64 for an unknown format, got $rc"; exit 1; }
+
+      - name: The hook wrapper emits context, not structured JSON
+        env:
+          SUPERPOWERS_TEST_DOCKER_RUNNING: 'true'
+        run: |
+          set -euo pipefail
+          app=$(mktemp -d)/app
+          mkdir -p "$app"
+          printf '{"require":{"symfony/framework-bundle":"^7.4"}}' > "$app/composer.json"
+          out=$(cd "$app" && CLAUDE_PLUGIN_ROOT="$GITHUB_WORKSPACE" /bin/bash "$GITHUB_WORKSPACE/hooks/session-start.sh")
+          grep -q 'Symfony project context' <<<"$out" || { echo "::error::hook produced no context"; exit 1; }
+
+      - name: Validate hooks.json
+        run: |
+          set -euo pipefail
+          jq -e '.hooks.SessionStart[0].hooks[0].command' hooks/hooks.json
+          grep -q 'session-start.sh' hooks/hooks.json

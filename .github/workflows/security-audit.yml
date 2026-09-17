@@ -8,10 +8,7 @@ on:
   push:
     paths:
       - "package.json"
-      - "package-lock.json"
       - "bun.lock"
-      - "yarn.lock"
-      - "pnpm-lock.yaml"
       - "composer.lock"
       - "requirements*.txt"
       - "poetry.lock"
@@ -20,8 +17,8 @@ permissions:
   contents: read
 
 jobs:
-  npm-audit:
-    name: NPM Audit
+  dependency-audit:
+    name: Dependency Audit (bun)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -30,31 +27,19 @@ jobs:
         id: check
         run: test -f package.json && echo "exists=true" >> "$GITHUB_OUTPUT" || echo "exists=false" >> "$GITHUB_OUTPUT"
 
-      - name: Setup Node
+      - name: Setup Bun
         if: steps.check.outputs.exists == 'true'
-        uses: actions/setup-node@v6
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: "lts/*"
+          bun-version: latest
 
       - name: Install dependencies
         if: steps.check.outputs.exists == 'true'
-        run: npm install --ignore-scripts || yarn install --ignore-scripts || true
+        run: bun install --frozen-lockfile --ignore-scripts
 
-      - name: Run npm audit
+      - name: Audit dependencies
         if: steps.check.outputs.exists == 'true'
-        id: audit
-        run: |
-          OUTPUT=$(npm audit 2>&1) || true
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -q "found 0 vulnerabilities"; then
-            echo "status=clean" >> "$GITHUB_OUTPUT"
-          else
-            echo "status=vulnerable" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Fail if critical/high vulnerabilities
-        if: steps.check.outputs.exists == 'true' && steps.audit.outputs.status == 'vulnerable'
-        run: npm audit --audit-level=high
+        run: bun audit --audit-level=high
 
   obfuscation-scan:
     name: JS Obfuscation Scan

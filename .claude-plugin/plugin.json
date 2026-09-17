@@ -1,7 +1,7 @@
 {
   "name": "superpowers-symfony",
-  "version": "0.0.1",
-  "description": "A Symfony-focused toolkit for Claude Code providing TDD (Pest/PHPUnit), Doctrine ORM, API Platform, Messenger, Voters, quality checks (PHP-CS-Fixer/PHPStan), and pragmatic architecture patterns - Docker Compose and Symfony Docker (FrankenPHP) compatible",
+  "version": "0.2.0",
+  "description": "A Symfony toolkit for coding agents providing TDD (Pest/PHPUnit), Doctrine ORM, API Platform, Messenger, Voters, quality checks (PHP-CS-Fixer/PHPStan), and pragmatic architecture patterns - Docker Compose and Symfony Docker (FrankenPHP) compatible",
   "author": {
     "name": "MakFly"
   },
@@ -23,7 +23,12 @@
     "quality",
     "pest",
     "phpunit",
+    "agent-skills",
     "claude-code",
     "claude-code-plugin"
-  ]
+  ],
+  "skills": "./content/skills/",
+  "agents": "./content/agents/",
+  "commands": "./content/commands/",
+  "hooks": "./hooks/hooks.json"
 }

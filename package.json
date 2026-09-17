@@ -1,0 +1,21 @@
+{
+  "name": "superpowers-symfony",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Build tooling for the Symfony agent skill library — generates harness adapters from content/",
+  "license": "MIT",
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "check": "bun run scripts/build.ts --check",
+    "validate": "bun run scripts/validate.ts",
+    "lint": "bun run scripts/lint_skill_content.ts",
+    "test": "bun run check && bun run validate && bun run lint"
+  },
+  "devDependencies": {
+    "yaml": "^2.5.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}

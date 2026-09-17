@@ -1,0 +1,50 @@
+{
+  "namespace": "symfony",
+  "version": "0.2.0",
+  "repo": "https://github.com/dev-toolings/superpowers-symfony",
+  "description": "Version-accurate Symfony expertise for coding agents: API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Messenger, security, and pragmatic architecture.",
+  "targets": {
+    "symfony": "7.4 LTS / 8.x (6.4 LTS legacy)",
+    "apiPlatform": "v4 (v3 legacy)",
+    "doctrineOrm": "3.x",
+    "php": "8.2 – 8.4"
+  },
+  "tagGroups": {
+    "api-platform": {
+      "label": "API Platform",
+      "summary": "Resources, filters, serialization, state providers/processors, security and versioning for API Platform v4.",
+      "globs": ["src/ApiResource/**", "src/State/**", "src/Dto/**", "config/packages/api_platform.yaml"]
+    },
+    "doctrine": {
+      "label": "Doctrine ORM",
+      "summary": "Entity mapping, relations, migrations, transactions, fetch modes, batch processing and lifecycle events.",
+      "globs": ["src/Entity/**", "src/Repository/**", "migrations/**", "config/packages/doctrine.yaml"]
+    },
+    "testing": {
+      "label": "Tests & TDD",
+      "summary": "RED-GREEN-REFACTOR with Pest or PHPUnit, functional and E2E tests, fixtures and test doubles.",
+      "globs": ["tests/**", "phpunit.xml*", "phpunit.dist.xml", "pest.php"]
+    },
+    "messenger": {
+      "label": "Messenger & async",
+      "summary": "Async message handling, retry and failure strategies, scheduling, CQRS buses.",
+      "globs": ["src/Message/**", "src/MessageHandler/**", "src/Scheduler/**", "config/packages/messenger.yaml"]
+    },
+    "security": {
+      "label": "Security",
+      "summary": "Voters, access control, rate limiting, form validation and input handling.",
+      "globs": ["src/Security/**", "src/Voter/**", "src/Form/**", "config/packages/security.yaml"]
+    },
+    "architecture": {
+      "label": "Architecture & services",
+      "summary": "Lean controllers, autowiring, ports & adapters, value objects, caching and UI components.",
+      "globs": ["src/**/*.php", "config/services.yaml", "templates/**"]
+    },
+    "workflow": {
+      "label": "Workflow & onboarding",
+      "summary": "Project bootstrap, runner selection, planning, daily workflow and quality gates.",
+      "globs": []
+    }
+  },
+  "extraTags": ["quality", "cache", "config", "performance", "tdd", "ui"]
+}
