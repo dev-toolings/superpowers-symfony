@@ -124,6 +124,7 @@ class ProcessPaymentHandler
 
 namespace App\Messenger;
 
+use App\Messenger\Stamp\DispatchedAtStamp;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Retry\RetryStrategyInterface;
 use Symfony\Component\Messenger\Stamp\RedeliveryStamp;
@@ -143,9 +144,11 @@ class CustomRetryStrategy implements RetryStrategyInterface
             return false;
         }
 
-        // Don't retry if message is too old
-        $sentStamp = $message->last(SentStamp::class);
-        if ($sentStamp && $sentStamp->getSentAt() < new \DateTimeImmutable('-1 hour')) {
+        // Don't retry if message is too old. Symfony stamps carry no send
+        // time (SentStamp only has the sender class and alias), so the app
+        // adds its own DispatchedAtStamp when dispatching.
+        $dispatchedAt = $message->last(DispatchedAtStamp::class)?->at;
+        if ($dispatchedAt && $dispatchedAt < new \DateTimeImmutable('-1 hour')) {
             return false;
         }
 
@@ -166,6 +169,26 @@ class CustomRetryStrategy implements RetryStrategyInterface
         };
     }
 }
+```
+
+The stamp the strategy reads:
+
+```php
+<?php
+// src/Messenger/Stamp/DispatchedAtStamp.php
+
+namespace App\Messenger\Stamp;
+
+use Symfony\Component\Messenger\Stamp\StampInterface;
+
+final class DispatchedAtStamp implements StampInterface
+{
+    public function __construct(
+        public readonly \DateTimeImmutable $at = new \DateTimeImmutable(),
+    ) {}
+}
+
+// $bus->dispatch($message, [new DispatchedAtStamp()]);
 ```
 
 Register:
@@ -207,12 +230,16 @@ bin/console messenger:failed:remove --all [--class-filter='App\Message\Foo']
 ```php
 <?php
 
-use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\Receiver\ListableReceiverInterface;
 
 class FailedMessageService
 {
     public function __construct(
-        private ReceiverInterface $failedTransport,
+        // find() and all() come from ListableReceiverInterface, not ReceiverInterface
+        #[Autowire(service: 'messenger.transport.failed')]
+        private ListableReceiverInterface $failedTransport,
         private MessageBusInterface $bus,
     ) {}
 
@@ -224,7 +251,9 @@ class FailedMessageService
             throw new \RuntimeException("Message {$id} not found");
         }
 
-        // Re-dispatch to original transport
+        // Re-dispatch through the routing config. Stamps from the first
+        // delivery are dropped; `messenger:failed:retry` keeps them, so prefer
+        // the command unless you need a custom flow.
         $this->bus->dispatch($envelope->getMessage());
 
         // Remove from failed queue

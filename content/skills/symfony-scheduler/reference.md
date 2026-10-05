@@ -2,7 +2,7 @@
 
 # Symfony Scheduler
 
-Available in Symfony 7.1+ as a native component.
+Native component since Symfony 6.3 (experimental), stable since 6.4.
 
 ## Installation
 
@@ -38,8 +38,7 @@ class DefaultScheduleProvider implements ScheduleProviderInterface
             ->add(RecurringMessage::every('5 minutes', new SyncInventory()))
 
             // Daily at 2 AM
-            ->add(RecurringMessage::every('1 day', new GenerateDailyReport())
-                ->from(new \DateTimeImmutable('02:00')))
+            ->add(RecurringMessage::every('1 day', new GenerateDailyReport(), from: '02:00'))
 
             // Every hour
             ->add(RecurringMessage::every('1 hour', new CleanupExpiredSessions()))
@@ -107,17 +106,17 @@ RecurringMessage::cron('0 0 * * *', new MyMessage())    // Daily at midnight
 RecurringMessage::cron('0 0 * * 0', new MyMessage())    // Weekly on Sunday
 RecurringMessage::cron('0 0 1 * *', new MyMessage())    // Monthly on 1st
 
-// With timezone
-RecurringMessage::cron('0 9 * * 1-5', new MyMessage())
-    ->timezone(new \DateTimeZone('Europe/Paris'))
+// With timezone: third argument of cron(), not a chained method
+RecurringMessage::cron('0 9 * * 1-5', new MyMessage(), new \DateTimeZone('Europe/Paris'))
 
-// Starting from specific time
-RecurringMessage::every('1 day', new MyMessage())
-    ->from(new \DateTimeImmutable('06:00'))
+// Starting from a specific time: `from` argument of every()
+RecurringMessage::every('1 day', new MyMessage(), from: new \DateTimeImmutable('06:00'))
 
-// Until specific time
-RecurringMessage::every('1 hour', new MyMessage())
-    ->until(new \DateTimeImmutable('2024-12-31'))
+// Until a specific time: `until` argument of every()
+RecurringMessage::every('1 hour', new MyMessage(), until: new \DateTimeImmutable('2030-12-31'))
+
+// Spread load: add up to N seconds of random delay
+RecurringMessage::every('1 hour', new MyMessage())->withJitter(60)
 ```
 
 ### Custom Trigger
@@ -315,9 +314,10 @@ class SchedulerMonitoringSubscriber implements EventSubscriberInterface
 
     public function onPostRun(PostRunEvent $event): void
     {
+        // PostRunEvent has no duration: measure it yourself if you need one
         $this->logger->info('Completed scheduled task', [
             'message' => get_class($event->getMessage()),
-            'duration' => $event->getDuration(),
+            'result' => get_debug_type($event->getResult()),
         ]);
     }
 }
