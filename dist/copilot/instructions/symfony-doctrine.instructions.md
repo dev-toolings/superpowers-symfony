@@ -20,7 +20,7 @@ if you need the deep implementation detail.
   Open `content/skills/doctrine-fetch-modes/SKILL.md`.
 - **doctrine-fixtures-foundry** — Create test data with Zenstruck Foundry v2 factories (PersistentObjectFactory, real objects); define states, sequences, and relationships
   Open `content/skills/doctrine-fixtures-foundry/SKILL.md`.
-- **doctrine-migrations** — Create and manage Doctrine migrations (lib 4.x) for schema versioning; handle dependencies, rollbacks, and production deployment
+- **doctrine-migrations** — Create and manage Doctrine migrations (bundle 4.x, library 3.9) for schema versioning; handle dependencies, rollbacks, and production deployment
   Open `content/skills/doctrine-migrations/SKILL.md`.
 - **doctrine-relations** — Define Doctrine entity relationships (OneToMany, ManyToMany, ManyToOne); configure cascade, orphan removal, multiple entity managers; prevent N+1 queries
   Open `content/skills/doctrine-relations/SKILL.md`.

@@ -118,7 +118,7 @@ run it first by `AGENTS.md` and by the generated rule indexes.
 | `doctrine-events` | React to Doctrine entity lifecycle in Symfony with attribute listeners (#[AsDoctrineListener]/#[AsEntityListener], ORM 3) and lifecycle callbacks |
 | `doctrine-fetch-modes` | Optimize Doctrine fetching with DTO hydration (SELECT NEW), fetch joins, lazy loading, query hints, and DBAL 4 access |
 | `doctrine-fixtures-foundry` | Create test data with Zenstruck Foundry v2 factories (PersistentObjectFactory, real objects); define states, sequences, and relationships |
-| `doctrine-migrations` | Create and manage Doctrine migrations (lib 4.x) for schema versioning; handle dependencies, rollbacks, and production deployment |
+| `doctrine-migrations` | Create and manage Doctrine migrations (bundle 4.x, library 3.9) for schema versioning; handle dependencies, rollbacks, and production deployment |
 | `doctrine-relations` | Define Doctrine entity relationships (OneToMany, ManyToMany, ManyToOne); configure cascade, orphan removal, multiple entity managers; prevent N+1 queries |
 | `doctrine-transactions` | Handle Doctrine transactions (ORM 3 wrapInTransaction), optimistic/pessimistic locking, flush strategies, and transaction boundaries |
 

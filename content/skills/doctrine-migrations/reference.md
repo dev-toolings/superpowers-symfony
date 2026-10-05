@@ -2,15 +2,16 @@
 
 Use this reference for implementation details and review criteria specific to `doctrine-migrations`.
 
-Versions (target): **DoctrineMigrationsBundle `^3.0`**, which wraps the
-**`doctrine/migrations` library 4.0.x** (5.0 in development). Migration classes
+Versions (target): **DoctrineMigrationsBundle 4.0.x** (3.x on older apps),
+which wraps the **`doctrine/migrations` library 3.9.x** (the library's 4.0
+branch is not released yet). Migration classes
 use the typed, `void`-returning signatures `up(Schema $schema): void` /
 `down(Schema $schema): void`.
 
 ## Install
 
 ```bash
-composer require doctrine/doctrine-migrations-bundle "^3.0"
+composer require doctrine/doctrine-migrations-bundle
 ```
 
 ## Typical workflow
@@ -127,9 +128,9 @@ When you have a non-default EM, also set `em:` (or a dedicated path) in
 
 ## Applicability
 
-- **Target**: bundle `^3.0` + library 4.0.x, typed `up/down(Schema): void`.
+- **Target**: bundle 4.0.x + library 3.9.x, typed `up/down(Schema): void`.
 - The signatures and `transactional`/`all_or_nothing` options shown apply to
-  library 3.x and 4.x alike.
+  every library 3.x release.
 
 ## Validation commands
 - php bin/console doctrine:migrations:status
