@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.3.0
+
+### Changed
+- **Every skill has a body of its own.** 43 of the 44 `SKILL.md` bodies were
+  seven shared templates, so `## Use when` could not tell an agent which skill
+  to load (#17). All 44 are now distinct, each drawn from its own
+  `reference.md` (or, for the onboarding skills, from `bin/symfony-context`
+  and the command map).
+- **Validation commands per skill.** The `Skill Operating Checklist` appended
+  to each `reference.md` carried the same design checklist and failure modes
+  everywhere. Each file now ends with a `## Validation commands` section
+  specific to its subject, read-only wherever possible.
+
+### Fixed
+- `strategy-pattern`: the export example used `#[TaggedLocator]`, removed in
+  Symfony 8.0. It now uses `#[AutowireLocator]`.
+
+### CI
+- `bun run lint` fails when two skills share the same `## Use when` and
+  `## Default workflow`, so a skill copied from a template cannot ship again.
+
 ## v0.2.2
 
 ### Fixed
