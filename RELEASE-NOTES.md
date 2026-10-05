@@ -1,5 +1,12 @@
 # Release Notes
 
+## v0.2.2
+
+### Fixed
+- The `SessionStart` hook command now quotes `${CLAUDE_PLUGIN_ROOT}`. An
+  installation path containing a space split the command into several words
+  and the hook failed to start. `claude plugin validate` no longer warns.
+
 ## v0.2.1
 
 ### Fixed
