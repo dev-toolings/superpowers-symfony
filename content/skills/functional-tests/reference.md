@@ -242,6 +242,6 @@ public static function provideUrls(): \Generator
 - Smoke tests cover key URLs with hardcoded paths.
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=...
-- ./vendor/bin/phpunit
-- ./vendor/bin/pest --filter=...
+- ./vendor/bin/phpunit --filter=HomeControllerTest
+- ./vendor/bin/phpunit --testsuite=Project
+- ./vendor/bin/phpunit --list-tests

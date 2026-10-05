@@ -6,28 +6,32 @@ Follow this skill exactly as written.
 # Tdd With Pest (Symfony)
 
 ## Use when
-- Building regression-safe behavior with TDD/functional/e2e tests.
-- Converting bug reports into executable failing tests.
+- Driving a feature with RED-GREEN-REFACTOR in a project that runs Pest v4 (PHP 8.3+).
+- Writing `it()` and `expect()` tests that need the Symfony kernel or an HTTP client.
+- Converting existing PHPUnit class tests to Pest syntax with `pest-plugin-drift`.
+- Adding a bug-reproducing test to a Pest suite before the fix.
 
 ## Default workflow
-1. Write failing test for target behavior and one boundary case.
-2. Implement minimal code to pass.
-3. Refactor while preserving green suite.
-4. Broaden coverage for invalid/unauthorized/not-found paths.
+1. Confirm PHP 8.3+ and Pest v4, then generate `tests/Pest.php` with `./vendor/bin/pest --init`.
+2. Bind the bridge classes in `tests/Pest.php`: `uses(KernelTestCase::class, Factories::class, ResetDatabase::class)->in('Integration')` and `uses(WebTestCase::class, ...)->in('Functional')`.
+3. RED: write an `it()` test with Foundry v2 factories, run `./vendor/bin/pest --filter` and check it fails for the right reason.
+4. GREEN: write the minimal code, then REFACTOR and re-run `./vendor/bin/pest`.
+5. Gate the suite with `--parallel` and `--coverage --min=80`.
 
 ## Guardrails
-- Prefer deterministic fixtures/builders.
-- Assert observable behavior, not internal implementation.
-- Keep tests isolated and stable in CI.
+- There is no official Symfony Pest plugin: never reference `pestphp/pest-plugin-symfony`, bind `KernelTestCase` or `WebTestCase` through `uses()`.
+- Foundry v2 factories return real objects: no `->object()` call.
+- Pest test files are anonymous, so use the `Factories` and `ResetDatabase` traits rather than the `#[ResetDatabase]` attribute.
+- Chain related checks with `expect()->and()`; keep one concept per test.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- RED/GREEN/REFACTOR trace.
-- Test files changed and executed commands.
-- Coverage and confidence notes.
+- The failing `./vendor/bin/pest` output (RED), then the passing run.
+- `tests/Pest.php` bindings added or changed.
+- Test files changed and the commands executed.
 
 ## References
 - `reference.md`

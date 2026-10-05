@@ -301,6 +301,6 @@ behave as in standard Pest. PHPUnit assertions remain available via `$this->asse
 - No official Symfony plugin — wire `KernelTestCase`/`WebTestCase` via `uses()` in `Pest.php`.
 
 ## Validation commands
-- ./vendor/bin/pest --filter=...
-- ./vendor/bin/pest
-- ./vendor/bin/pest --parallel
+- ./vendor/bin/pest --filter "creates an order for a user"
+- ./vendor/bin/pest tests/Integration
+- ./vendor/bin/pest --parallel --coverage --min=80
