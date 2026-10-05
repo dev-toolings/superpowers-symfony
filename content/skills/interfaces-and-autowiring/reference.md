@@ -422,9 +422,9 @@ bin/console debug:autowiring Payment
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console debug:autowiring <Type>
+- php bin/console debug:container <service-id>
+- php bin/console lint:container
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.

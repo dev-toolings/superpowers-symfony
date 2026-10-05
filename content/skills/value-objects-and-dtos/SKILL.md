@@ -13,28 +13,31 @@ allowed-tools:
 # Value Objects And Dtos (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- A domain concept with rules of its own (money, email, address) travels as raw scalars.
+- Data crosses a boundary: request input, API output, message payload.
+- Storing a value object inside a Doctrine entity.
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. Decide: a value object for a domain concept with invariants, a DTO for data crossing a boundary.
+2. Make it `readonly`, validate in the constructor, and fail fast.
+3. Give value objects equality by value and operations that return new instances.
+4. Persist value objects as Doctrine embeddables.
+5. Keep input DTOs (validation constraints) apart from output DTOs (serializer attributes).
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- No setters and no mutation: a change returns a new instance.
+- DTOs carry data only, with no behavior.
+- Never expose entities directly as API input or output.
+- Store money as an integer in minor units, never as a float.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- Value objects with their invariants and equality.
+- Input and output DTOs, and their mapping to and from entities.
+- Unit tests for each invariant.
 
 ## References
 - `reference.md`

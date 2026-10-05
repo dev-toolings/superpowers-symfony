@@ -411,9 +411,9 @@ final class OrderController
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- grep -rE "^use (Symfony|Doctrine)\\\\" src/Domain (must print nothing)
+- php bin/console doctrine:mapping:info
+- ./vendor/bin/phpunit tests/Unit
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.

@@ -436,9 +436,9 @@ App\Domain\ValueObject\Money:
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
+- ./vendor/bin/phpunit --filter=ValueObject
 - ./vendor/bin/phpstan analyse
+- php bin/console doctrine:schema:validate
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
