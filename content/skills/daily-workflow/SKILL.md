@@ -38,4 +38,3 @@ allowed-tools:
 
 ## References
 - `reference.md`
-- `docs/complexity-tiers.md`

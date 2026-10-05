@@ -38,6 +38,5 @@ Follow this skill exactly as written.
 
 ## References
 - `reference.md`
-- `docs/complexity-tiers.md`
 
 Deeper implementation detail: `content/skills/symfony-cache/reference.md`.

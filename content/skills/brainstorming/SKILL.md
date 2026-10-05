@@ -37,4 +37,3 @@ allowed-tools:
 - Residual risks and next steps.
 
 ## References
-- `docs/complexity-tiers.md`
