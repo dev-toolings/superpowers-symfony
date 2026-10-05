@@ -26,7 +26,7 @@ allowed-tools:
 2. Reset state with `#[ResetDatabase]` and the `Factories` trait, with DAMA rolling back each test.
 3. Call `static::createClient()->request()` and assert the status code, content type, and `assertJsonContains()`.
 4. Authenticate with `auth_bearer` and cover the anonymous, owner, and other-user cases.
-5. Assert `hydra:member` and `hydra:totalItems` for filters and pagination.
+5. Assert `member` and `totalItems` for filters and pagination (`hydra:`-prefixed only with `hydra_prefix: true`).
 6. Assert the shape with `assertMatchesResourceItemJsonSchema()` and `assertMatchesResourceCollectionJsonSchema()`.
 
 ## Guardrails

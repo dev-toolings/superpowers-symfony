@@ -302,7 +302,8 @@ class DeprecationSubscriber implements EventSubscriberInterface
         if (str_starts_with($path, '/api/v1/')) {
             $response = $event->getResponse();
             $response->headers->set('Sunset', 'Sat, 01 Jan 2025 00:00:00 GMT');
-            $response->headers->set('Deprecation', 'true');
+            // RFC 9745: an @-prefixed Unix timestamp, not 'true'
+            $response->headers->set('Deprecation', '@1704067200');
             $response->headers->set(
                 'Link',
                 '</api/v2' . substr($path, 7) . '>; rel="successor-version"'
@@ -348,11 +349,12 @@ api_platform:
 ## Testing Multiple Versions
 
 ```php
+// In a test class extending ApiPlatform\Symfony\Bundle\Test\ApiTestCase
 public function testV1ReturnsLegacyFormat(): void
 {
     $product = ProductFactory::createOne(['price' => 1999]);
 
-    $response = $this->client->request('GET', '/api/v1/products/' . $product->getId());
+    $response = static::createClient()->request('GET', '/api/v1/products/' . $product->getId());
 
     $this->assertResponseIsSuccessful();
     $data = $response->toArray();
@@ -366,7 +368,7 @@ public function testV2ReturnsNewFormat(): void
 {
     $product = ProductFactory::createOne(['price' => 1999]);
 
-    $response = $this->client->request('GET', '/api/v2/products/' . $product->getId());
+    $response = static::createClient()->request('GET', '/api/v2/products/' . $product->getId());
 
     $this->assertResponseIsSuccessful();
     $data = $response->toArray();
@@ -380,7 +382,7 @@ public function testV2ReturnsNewFormat(): void
 
 ## Best Practices
 
-1. **URI versioning** for major changes - clearest for consumers
+1. **Deprecation first** - path versioning only for breaking changes that deprecation and groups cannot express
 2. **Groups for minor changes** - add fields without new version
 3. **Set sunset dates** - give consumers time to migrate
 4. **Document changes** - changelog per version
