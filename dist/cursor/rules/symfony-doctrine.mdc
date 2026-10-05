@@ -17,7 +17,7 @@ if you need the deep implementation detail.
   Open `content/skills/doctrine-batch-processing/SKILL.md`.
 - **doctrine-events** — React to Doctrine entity lifecycle in Symfony with attribute listeners (#[AsDoctrineListener]/#[AsEntityListener], ORM 3) and lifecycle callbacks
   Open `content/skills/doctrine-events/SKILL.md`.
-- **doctrine-fetch-modes** — Optimize Doctrine fetching with DTO hydration (SELECT NEW; partial removed in ORM 3), lazy loading, query hints, and DBAL 4 access
+- **doctrine-fetch-modes** — Optimize Doctrine fetching with DTO hydration (SELECT NEW), fetch joins, lazy loading, query hints, and DBAL 4 access
   Open `content/skills/doctrine-fetch-modes/SKILL.md`.
 - **doctrine-fixtures-foundry** — Create test data with Zenstruck Foundry v2 factories (PersistentObjectFactory, real objects); define states, sequences, and relationships
   Open `content/skills/doctrine-fixtures-foundry/SKILL.md`.

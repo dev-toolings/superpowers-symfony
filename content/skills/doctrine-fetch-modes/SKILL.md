@@ -1,6 +1,6 @@
 ---
 name: doctrine-fetch-modes
-description: Optimize Doctrine fetching with DTO hydration (SELECT NEW; partial removed in ORM 3), lazy loading, query hints, and DBAL 4 access
+description: Optimize Doctrine fetching with DTO hydration (SELECT NEW), fetch joins, lazy loading, query hints, and DBAL 4 access
 capabilities: [read, search, edit, shell]
 tags: [doctrine, performance]
 # projected by `bun run build` — do not edit by hand
@@ -18,7 +18,7 @@ allowed-tools:
 ## Use when
 - A list or detail endpoint runs one query per row (N+1) on a relation.
 - A read-only list needs a few columns, not full managed entities.
-- Choosing `LAZY`, `EAGER` or `EXTRA_LAZY` on a mapping, or replacing an ORM 2 feature removed in ORM 3 (`partial`, `Query::setFetchMode()`).
+- Choosing `LAZY`, `EAGER` or `EXTRA_LAZY` on a mapping, or porting ORM 2 code that relied on `PARTIAL` objects.
 - A report or projection query drops to raw SQL through DBAL 4.
 
 ## Default workflow
@@ -30,7 +30,7 @@ allowed-tools:
 6. For raw SQL, use the DBAL 4 methods (`fetchAllAssociative()`, `fetchOne()`, `executeStatement()`).
 
 ## Guardrails
-- ORM 3 removed the `partial` DQL keyword, `Query::HINT_FORCE_PARTIAL_LOAD` and `Query::setFetchMode()`: do not reintroduce them.
+- `PARTIAL` in DQL fails on ORM 3.0 to 3.2 and only returns from 3.3: use `SELECT NEW` DTOs for read-only lists instead.
 - Avoid `fetch: 'EAGER'` on a mapping; a fetch join in the query gives the same result per use case.
 - `SELECT NEW` returns DTOs, not managed entities: never modify or flush them.
 - DBAL 4 removed `query()`, `exec()` and `fetchAll()`.

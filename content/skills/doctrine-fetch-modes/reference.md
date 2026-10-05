@@ -46,9 +46,10 @@ $slice = $post->getComments()->slice(0, 5); // LIMIT query
 
 ## Query-Level Fetch Mode
 
-> **ORM 3 note**: `Query::setFetchMode()` was removed. The portable, explicit
-> way to eager-load a relation for a single query is a fetch join (`addSelect`
-> + `leftJoin`, see below) rather than a per-query fetch-mode override.
+> **ORM 3 note**: `AbstractQuery::setFetchMode()` still exists and is meant
+> for `ClassMetadata::FETCH_EAGER` only (other modes were deprecated in 2.x).
+> The explicit way to eager-load a relation for a single query is a fetch join
+> (`addSelect` + `leftJoin`, see below), which also lets you filter and order.
 
 ```php
 <?php
@@ -100,11 +101,12 @@ public function findByIdWithAuthor(int $id): ?Post
 
 ## Loading Only the Columns You Need (DTO hydration)
 
-> **ORM 3 breaking change**: the `partial` DQL keyword and
-> `Query::HINT_FORCE_PARTIAL_LOAD` were deprecated in ORM 2.x and **removed in
-> ORM 3.0**. `SELECT PARTIAL p.{id, title}` no longer parses. Use explicit DTO
-> (`SELECT NEW`) hydration instead — it is faster, type-safe, and the partial
-> object footguns (uninitialized fields, broken change tracking) are gone.
+> **ORM 3 note**: the `PARTIAL` DQL keyword was removed in ORM 3.0 and is
+> back from **ORM 3.3** (3.2 only for array hydration), so
+> `SELECT PARTIAL p.{id, title}` fails on 3.0 to 3.2. For read-only lists,
+> prefer explicit DTO (`SELECT NEW`) hydration: it works on every version, is
+> type-safe, and avoids the partial object footguns (uninitialized fields,
+> managed entities that look complete but are not).
 
 Define a plain DTO and project into it with `SELECT NEW`:
 
@@ -149,12 +151,16 @@ public function processAllPosts(): void
     $query = $this->createQueryBuilder('p')
         ->getQuery();
 
+    $i = 0;
     foreach ($query->toIterable() as $post) {
         $this->process($post);
 
-        // Clear entity manager periodically
-        $this->em->clear(Post::class);
+        // Clear every 100 items; ORM 3 clear() takes no argument
+        if (++$i % 100 === 0) {
+            $this->em->clear();
+        }
     }
+    $this->em->clear();
 }
 ```
 
@@ -169,8 +175,9 @@ $author = $post->getAuthor();
 // Proxy is a subclass of User
 $author instanceof User; // true
 
-// Check if proxy is initialized
-$em->getUnitOfWork()->isInIdentityMap($author); // true if loaded
+// Check if proxy is initialized (being in the identity map is not enough:
+// an uninitialized proxy is registered there too)
+$em->getUnitOfWork()->isUninitializedObject($author); // true until loaded
 
 // Force initialization
 $em->getUnitOfWork()->initializeObject($author);
@@ -255,7 +262,7 @@ public function findForDisplay(): array
 2. **EXTRA_LAZY for large collections**: count(), contains(), slice()
 3. **Join fetch in repositories**: Explicit control over loading
 4. **Avoid EAGER on mapping**: Fetch join in the query is better
-5. **DTO (`SELECT NEW`) for lists**: Replaces the removed `partial` keyword
+5. **DTO (`SELECT NEW`) for lists**: Safer than `PARTIAL` objects, and portable across ORM 3 minors
 6. **Batch with `toIterable()`**: For large dataset processing
 7. **Profile queries**: Use Symfony profiler to spot N+1
 
@@ -282,11 +289,11 @@ $affected = $connection->executeStatement(
 
 ## Applicability
 
-- **ORM 3.x / DBAL 4.x** (target): no `partial` keyword,
-  no `HINT_FORCE_PARTIAL_LOAD`, no `Query::setFetchMode()`; use `SELECT NEW`
+- **ORM 3.x / DBAL 4.x** (target): `PARTIAL` is unavailable in 3.0 to 3.2 and
+  back from 3.3; use `setFetchMode()` only with `FETCH_EAGER`; prefer `SELECT NEW`
   DTOs and fetch joins. DBAL `query()`/`exec()`/`fetchAll()` removed.
-- **ORM 2.x (legacy)**: `partial` still parses but is deprecated — migrate to
-  DTO hydration before upgrading to 3.0.
+- **ORM 2.x (legacy)**: `partial` still parses. Migrate to DTO hydration, or
+  go straight to ORM 3.3+ if the code must keep `PARTIAL`.
 
 ## Validation commands
 - php bin/console doctrine:query:dql "<DQL>" --show-sql

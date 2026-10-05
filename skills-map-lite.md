@@ -18,7 +18,7 @@ Lightweight index for fast discovery, grouped by tag.
 
 - `doctrine-batch-processing` — Process large datasets with Doctrine (ORM 3 toIterable, flush+clear, bulk DQL) and memory management
 - `doctrine-events` — React to Doctrine entity lifecycle in Symfony with attribute listeners (#[AsDoctrineListener]/#[AsEntityListener], ORM 3) and lifecycle callbacks
-- `doctrine-fetch-modes` — Optimize Doctrine fetching with DTO hydration (SELECT NEW; partial removed in ORM 3), lazy loading, query hints, and DBAL 4 access
+- `doctrine-fetch-modes` — Optimize Doctrine fetching with DTO hydration (SELECT NEW), fetch joins, lazy loading, query hints, and DBAL 4 access
 - `doctrine-fixtures-foundry` — Create test data with Zenstruck Foundry v2 factories (PersistentObjectFactory, real objects); define states, sequences, and relationships
 - `doctrine-migrations` — Create and manage Doctrine migrations (lib 4.x) for schema versioning; handle dependencies, rollbacks, and production deployment
 - `doctrine-relations` — Define Doctrine entity relationships (OneToMany, ManyToMany, ManyToOne); configure cascade, orphan removal, multiple entity managers; prevent N+1 queries
