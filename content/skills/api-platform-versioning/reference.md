@@ -2,7 +2,13 @@
 
 # API Platform Versioning
 
-> **Official recommendation (v3 & v4): prefer DEPRECATION over versioning.** API Platform's guidance is to evolve a single API and deprecate fields/operations with a sunset window, rather than maintaining parallel `/v1`, `/v2` surfaces. Reach for path versioning only when a breaking representation change genuinely cannot be expressed through deprecation + groups. Start at the "Deprecation (recommended)" section below; the multi-version strategies after it are the fallback.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
+
+> **Official recommendation (v3 to 5.0): prefer DEPRECATION over versioning.** API Platform's guidance is to evolve a single API and deprecate fields/operations with a sunset window, rather than maintaining parallel `/v1`, `/v2` surfaces. Reach for path versioning only when a breaking representation change genuinely cannot be expressed through deprecation + groups. Start at the "Deprecation (recommended)" section below; the multi-version strategies after it are the fallback.
 
 ## Deprecation (recommended)
 

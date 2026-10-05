@@ -1,6 +1,12 @@
 # API Platform State Providers & Processors Reference (Symfony)
 
-Targets **API Platform v4** (current 4.3). v3.4 deltas flagged inline. The provider/processor architecture replaced v2's DataProvider/DataPersister in v3.0.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
+
+The provider/processor architecture replaced v2's DataProvider/DataPersister in v3.0.
 
 ## ProviderInterface (reads)
 

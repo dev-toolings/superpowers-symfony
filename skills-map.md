@@ -5,12 +5,12 @@ Short index for skill discovery without loading full files.
 
 | Skill | Description | Tags | Path |
 | --- | --- | --- | --- |
-| `api-platform-dto-resources` | Map entities to API DTOs in API Platform v4 with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts | api-platform | `content/skills/api-platform-dto-resources/SKILL.md` |
-| `api-platform-filters` | Implement API Platform filters - v4 Parameters API (QueryParameter) and legacy #[ApiFilter] - for search, date, range, boolean, and custom filtering | api-platform | `content/skills/api-platform-filters/SKILL.md` |
-| `api-platform-resources` | Configure API Platform v4 resources with explicit operations, pagination, and typed OpenAPI for clean, versioned REST/GraphQL APIs | api-platform | `content/skills/api-platform-resources/SKILL.md` |
+| `api-platform-dto-resources` | Map entities to API DTOs in API Platform (v5, 4.4, 4.3) with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts | api-platform | `content/skills/api-platform-dto-resources/SKILL.md` |
+| `api-platform-filters` | Implement API Platform filters - Parameters API (QueryParameter, v5/4.4/4.3) and the #[ApiFilter] attribute deprecated since 4.4 - for search, date, range, boolean, and custom filtering | api-platform | `content/skills/api-platform-filters/SKILL.md` |
+| `api-platform-resources` | Configure API Platform resources (v5, 4.4, 4.3) with explicit operations, pagination, and typed OpenAPI for clean, versioned REST/GraphQL APIs | api-platform | `content/skills/api-platform-resources/SKILL.md` |
 | `api-platform-security` | Secure API Platform resources with security expressions, voters, securityPostValidation, and operation-level access control | api-platform, security | `content/skills/api-platform-security/SKILL.md` |
 | `api-platform-serialization` | Control API Platform serialization with groups, #[Context], IRI links (readableLink/writableLink), and custom context builders | api-platform | `content/skills/api-platform-serialization/SKILL.md` |
-| `api-platform-state-providers` | Master API Platform v4 State Providers and Processors (ProviderInterface/ProcessorInterface) to decouple data retrieval and persistence from entities | api-platform | `content/skills/api-platform-state-providers/SKILL.md` |
+| `api-platform-state-providers` | Master API Platform State Providers and Processors (v5, 4.4, 4.3) (ProviderInterface/ProcessorInterface) to decouple data retrieval and persistence from entities | api-platform | `content/skills/api-platform-state-providers/SKILL.md` |
 | `api-platform-tests` | Test API Platform resources with ApiTestCase; assert collections, items, filters, JSON schema, and authentication | api-platform, testing | `content/skills/api-platform-tests/SKILL.md` |
 | `api-platform-versioning` | Evolve API Platform APIs via deprecation (deprecationReason/sunset, RFC 8594/9745), the recommended alternative to versioning; plus path/header strategies | api-platform | `content/skills/api-platform-versioning/SKILL.md` |
 | `bootstrap-check` | Verify Symfony project configuration including .env, services.yaml, doctrine settings, and framework requirements | workflow, config | `content/skills/bootstrap-check/SKILL.md` |

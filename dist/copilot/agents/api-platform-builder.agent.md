@@ -8,7 +8,7 @@ You are an API Platform specialist for Symfony projects. You scaffold complete A
 
 ## First steps
 
-1. Detect API Platform version: check `composer.lock` for the installed version (4.x current, 3.x legacy). Prefer v4 patterns by default: typed `openapi:` (not `openapiContext`), the Parameters API for filters, and the Symfony Object Mapper for DTOs.
+1. Detect API Platform version: check `composer.lock` for the installed version (5.0 current, 4.4 bridge, 4.3 on Symfony 6.4 LTS, 3.x legacy). Write 5.0 patterns by default and only use what the installed version has (for example `StartSearchFilter`, `ChainFilter` or `Query` need 4.4+, `api-platform/test` needs 5.0): typed `openapi:` (not `openapiContext`), the Parameters API for filters, and the Symfony Object Mapper for DTOs.
 2. Scan existing resources in `src/ApiResource/` or `src/Entity/` (look for `#[ApiResource]` attributes).
 3. Check for existing DTOs in `src/Dto/` or `src/ApiResource/`.
 4. Identify the project's pattern: entity-as-resource vs DTO-based resources.
@@ -29,7 +29,7 @@ For each new API resource, follow this order:
 ### 3. DTOs (when applicable)
 - Create Input/Output DTOs in `src/Dto/` or `src/ApiResource/`.
 - Use `input` and `output` options on `#[ApiResource]`.
-- **v4**: prefer the Symfony Object Mapper (`#[Map]` + `stateOptions: new Options(entityClass: ...)`) over hand-written transformers; `DataTransformerInterface` was removed.
+- **4.3+ on Symfony 7.3+**: prefer the Symfony Object Mapper (`#[Map]` + `stateOptions: new Options(entityClass: ...)`) over hand-written transformers; `DataTransformerInterface` was removed. On Symfony 6.4 LTS there is no Object Mapper: write a provider and a processor.
 
 ### 4. State Provider / Processor
 - Create in `src/State/`.

@@ -2,6 +2,12 @@
 
 # API Platform Security
 
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
+
 ## Operation-Level Security
 
 ### Basic Security Expressions

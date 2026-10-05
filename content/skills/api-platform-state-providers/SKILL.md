@@ -1,6 +1,6 @@
 ---
 name: api-platform-state-providers
-description: Master API Platform v4 State Providers and Processors (ProviderInterface/ProcessorInterface) to decouple data retrieval and persistence from entities
+description: Master API Platform State Providers and Processors (v5, 4.4, 4.3) (ProviderInterface/ProcessorInterface) to decouple data retrieval and persistence from entities
 capabilities: [read, search, edit, shell]
 tags: [api-platform]
 # projected by `bun run build` — do not edit by hand
