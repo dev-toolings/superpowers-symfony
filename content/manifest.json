@@ -1,6 +1,6 @@
 {
   "namespace": "symfony",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "repo": "https://github.com/dev-toolings/superpowers-symfony",
   "description": "Version-accurate Symfony expertise for coding agents: API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Messenger, security, and pragmatic architecture.",
   "targets": {
