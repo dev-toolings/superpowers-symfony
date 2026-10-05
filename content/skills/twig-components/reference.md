@@ -423,20 +423,7 @@ class ContactForm extends AbstractController
 5. **URL sync**: Use `url: true` for bookmarkable state
 6. **Test components**: Unit test the PHP class
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console debug:twig-component
 - php bin/console lint:twig templates/components
 - ./vendor/bin/phpunit --filter=Component
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-

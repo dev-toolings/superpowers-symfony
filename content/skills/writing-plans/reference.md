@@ -207,21 +207,7 @@ class Order
 4. **Reviewable**: Plan should be reviewable by team
 5. **Time-boxed**: Add rough complexity indicators (S/M/L)
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console debug:router (planned endpoints do not already exist)
 - php bin/console doctrine:mapping:info (planned entities and relations)
 - git status (planning changes no code)
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

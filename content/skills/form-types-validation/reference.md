@@ -435,20 +435,7 @@ class CustomViolationMapper implements ViolationMapperInterface
 5. **Custom constraints**: Reusable business logic
 6. **Test validation**: Unit test constraints
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=Form
 - php bin/console debug:form
 - php bin/console debug:validator 'App\Entity\<Entity>'
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-

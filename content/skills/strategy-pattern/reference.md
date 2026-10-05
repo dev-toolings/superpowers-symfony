@@ -370,21 +370,7 @@ class PaymentServiceTest extends TestCase
 5. **Priority**: Control evaluation order
 6. **Fallback**: Include a default strategy
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console debug:container --tag=<tag>
 - php bin/console debug:autowiring <Interface>
 - ./vendor/bin/phpunit --filter=Strategy
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

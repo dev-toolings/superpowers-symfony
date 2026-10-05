@@ -300,20 +300,7 @@ behave as in standard Pest. PHPUnit assertions remain available via `$this->asse
 - One assertion concept per test (chain related `expect()` with `->and()`).
 - No official Symfony plugin — wire `KernelTestCase`/`WebTestCase` via `uses()` in `Pest.php`.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/pest --filter=...
 - ./vendor/bin/pest
 - ./vendor/bin/pest --parallel
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.

@@ -203,20 +203,7 @@ public function it_rejects_invalid_submission(): void
 - Console tests use `runCommand()` + `assertCommandIsSuccessful` (8.1+) or `CommandTester`.
 - Invalid form/HTTP cases assert 422 via `assertResponseIsUnprocessable()`.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=...
 - ./vendor/bin/phpunit
 - ./vendor/bin/pest --filter=...
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.

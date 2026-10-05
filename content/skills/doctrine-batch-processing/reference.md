@@ -286,20 +286,7 @@ class ProcessProductsCommand extends Command
 - **ORM 2.7+ (legacy)**: `toIterable()` available alongside the deprecated
   `iterate()`; prefer `toIterable()`.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console <batch-command> -vv (watch memory per batch)
 - php -d memory_limit=128M bin/console <batch-command>
 - ./vendor/bin/phpunit --filter=Batch
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-

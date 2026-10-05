@@ -412,21 +412,7 @@ class OrderReadRepository
 5. **Read models for complex queries**: Optimize separately
 6. **Transaction on commands**: Wrap in database transaction
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console debug:messenger
 - php bin/console debug:container --tag=messenger.message_handler
 - ./vendor/bin/phpunit --filter=Handler
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

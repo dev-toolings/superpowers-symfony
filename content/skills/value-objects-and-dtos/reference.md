@@ -427,21 +427,7 @@ App\Domain\ValueObject\Money:
 6. **Separate Input/Output**: Different validation needs
 7. **Use Embeddables**: Store VOs in database naturally
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=ValueObject
 - ./vendor/bin/phpstan analyse
 - php bin/console doctrine:schema:validate
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

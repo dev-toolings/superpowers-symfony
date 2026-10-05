@@ -311,21 +311,7 @@ git push origin feature/product-filtering
 | Debug services | `bin/console debug:container` |
 | Consume messages | `bin/console messenger:consume async` |
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console about
 - php bin/console doctrine:migrations:status
 - git status
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

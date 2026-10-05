@@ -131,20 +131,7 @@ When you have a non-default EM, also set `em:` (or a dedicated path) in
 - The signatures and `transactional`/`all_or_nothing` options shown apply to
   library 3.x and 4.x alike.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console doctrine:migrations:diff
 - php bin/console doctrine:migrations:migrate
 - ./vendor/bin/phpunit --filter=Doctrine
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.

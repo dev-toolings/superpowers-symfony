@@ -402,21 +402,7 @@ final class OrderController
 3. **Focus**: Domain logic is isolated and explicit
 4. **Framework agnostic**: Domain doesn't know about Symfony
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - grep -rE "^use (Symfony|Doctrine)\\\\" src/Domain (must print nothing)
 - php bin/console doctrine:mapping:info
 - ./vendor/bin/phpunit tests/Unit
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-
