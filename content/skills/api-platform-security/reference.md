@@ -321,17 +321,48 @@ security:
 
 ## Rate Limiting
 
-```php
-use Symfony\Component\RateLimiter\Attribute\RateLimit;
+Symfony's `#[RateLimit]` attribute (8.1+, `Symfony\Component\HttpKernel\Attribute\RateLimit`)
+is read from the **controller**. An `#[ApiResource]` class is not the
+controller, so the attribute has no effect there. Consume a named limiter in
+the operation's state processor instead (limiter `comment` declared under
+`framework.rate_limiter`, see the `rate-limiting` skill):
 
-#[ApiResource(
-    operations: [
-        new Post(
-            security: "is_granted('ROLE_USER')",
-        ),
-    ],
-)]
-#[RateLimit(limit: 10, interval: '1 minute')]
+```php
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\Attribute\Target;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
+
+final class RateLimitedCommentProcessor implements ProcessorInterface
+{
+    public function __construct(
+        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
+        private ProcessorInterface $persist,
+        #[Target('comment')]
+        private RateLimiterFactoryInterface $commentLimiter,
+        private Security $security,
+    ) {}
+
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
+    {
+        $limit = $this->commentLimiter
+            ->create($this->security->getUser()?->getUserIdentifier() ?? 'anonymous')
+            ->consume();
+
+        if (!$limit->isAccepted()) {
+            throw new TooManyRequestsHttpException($limit->getRetryAfter()->getTimestamp() - time());
+        }
+
+        return $this->persist->process($data, $operation, $uriVariables, $context);
+    }
+}
+
+#[ApiResource(operations: [
+    new Post(security: "is_granted('ROLE_USER')", processor: RateLimitedCommentProcessor::class),
+])]
 class Comment { /* ... */ }
 ```
 

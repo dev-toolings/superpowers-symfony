@@ -4,6 +4,13 @@
 
 > **Version note.** `ApiPlatform\Symfony\Bundle\Test\ApiTestCase` and the Client/assertion API are stable v3→v4 (the namespace was `ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase` only in v2). The examples below use **Zenstruck Foundry v2** (`#[ResetDatabase]` attribute style); see "Foundry v2 reset" for the trait-based PHPUnit 9 fallback.
 
+> **Response keys.** API Platform 4 defaults to `serializer.hydra_prefix: false`,
+> so JSON-LD collections expose `member`, `totalItems`, `view` and
+> `@type: Collection`. With `hydra_prefix: true` (the v3 behavior) they are
+> `hydra:member`, `hydra:totalItems`, `hydra:view`. The default page size is
+> 30 (`pagination_items_per_page`); read the configured value rather than
+> hardcoding it.
+
 ## Setup
 
 ```bash
@@ -34,7 +41,7 @@ class ProductTest extends ApiTestCase
 
     public function testGetCollection(): void
     {
-        ProductFactory::createMany(30);
+        ProductFactory::createMany(40);
 
         $response = static::createClient()->request('GET', '/api/products');
 
@@ -42,10 +49,10 @@ class ProductTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
             '@context' => '/api/contexts/Product',
-            '@type' => 'hydra:Collection',
-            'hydra:totalItems' => 30,
+            '@type' => 'Collection',
+            'totalItems' => 40,
         ]);
-        $this->assertCount(20, $response->toArray()['hydra:member']); // Default pagination
+        $this->assertCount(30, $response->toArray()['member']); // Default pagination: 30 per page
     }
 
     public function testGetItem(): void
@@ -225,7 +232,7 @@ public function testSearchFilter(): void
     $response = static::createClient()->request('GET', '/api/products?name=Apple');
 
     $this->assertResponseIsSuccessful();
-    $this->assertCount(2, $response->toArray()['hydra:member']);
+    $this->assertCount(2, $response->toArray()['member']);
 }
 
 public function testRangeFilter(): void
@@ -240,7 +247,7 @@ public function testRangeFilter(): void
     );
 
     $this->assertResponseIsSuccessful();
-    $this->assertCount(1, $response->toArray()['hydra:member']);
+    $this->assertCount(1, $response->toArray()['member']);
 }
 
 public function testOrderFilter(): void
@@ -252,7 +259,7 @@ public function testOrderFilter(): void
     $response = static::createClient()->request('GET', '/api/products?order[name]=asc');
 
     $this->assertResponseIsSuccessful();
-    $data = $response->toArray()['hydra:member'];
+    $data = $response->toArray()['member'];
     $this->assertEquals('Apple', $data[0]['name']);
     $this->assertEquals('Banana', $data[1]['name']);
     $this->assertEquals('Zebra', $data[2]['name']);
@@ -270,16 +277,16 @@ public function testPagination(): void
     $response = static::createClient()->request('GET', '/api/products');
     $data = $response->toArray();
 
-    $this->assertCount(20, $data['hydra:member']); // Default per page
-    $this->assertEquals(50, $data['hydra:totalItems']);
-    $this->assertArrayHasKey('hydra:view', $data);
-    $this->assertArrayHasKey('hydra:next', $data['hydra:view']);
+    $this->assertCount(30, $data['member']); // Default per page
+    $this->assertEquals(50, $data['totalItems']);
+    $this->assertArrayHasKey('view', $data);
+    $this->assertArrayHasKey('next', $data['view']);
 
     // Second page
     $response = static::createClient()->request('GET', '/api/products?page=2');
     $data = $response->toArray();
 
-    $this->assertCount(20, $data['hydra:member']);
+    $this->assertCount(20, $data['member']); // 50 - 30 on the second page
 }
 
 public function testCustomItemsPerPage(): void
@@ -289,7 +296,7 @@ public function testCustomItemsPerPage(): void
     $response = static::createClient()->request('GET', '/api/products?itemsPerPage=5');
     $data = $response->toArray();
 
-    $this->assertCount(5, $data['hydra:member']);
+    $this->assertCount(5, $data['member']);
 }
 ```
 
