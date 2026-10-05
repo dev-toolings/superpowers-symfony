@@ -141,28 +141,11 @@ public function findPostListItems(): array
 The constructor argument order must match the `NEW` argument order. The result
 is an array of `PostListItem`, not managed entities — ideal for read-only lists.
 
-## Batch Processing with Iteration
+## Large Datasets
 
-Process large datasets without memory issues:
-
-```php
-public function processAllPosts(): void
-{
-    $query = $this->createQueryBuilder('p')
-        ->getQuery();
-
-    $i = 0;
-    foreach ($query->toIterable() as $post) {
-        $this->process($post);
-
-        // Clear every 100 items; ORM 3 clear() takes no argument
-        if (++$i % 100 === 0) {
-            $this->em->clear();
-        }
-    }
-    $this->em->clear();
-}
-```
+Iterating over thousands of rows (`toIterable()`, flush and `clear()` in
+batches, id-based pagination, DQL or DBAL bulk writes) is a memory problem,
+not a fetching one: see the `doctrine-batch-processing` skill.
 
 ## Proxy Objects
 
@@ -263,7 +246,7 @@ public function findForDisplay(): array
 3. **Join fetch in repositories**: Explicit control over loading
 4. **Avoid EAGER on mapping**: Fetch join in the query is better
 5. **DTO (`SELECT NEW`) for lists**: Safer than `PARTIAL` objects, and portable across ORM 3 minors
-6. **Batch with `toIterable()`**: For large dataset processing
+6. **Large datasets**: see the `doctrine-batch-processing` skill
 7. **Profile queries**: Use Symfony profiler to spot N+1
 
 ## DBAL 4 — method-based API
