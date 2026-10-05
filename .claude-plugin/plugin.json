@@ -28,7 +28,14 @@
     "claude-code-plugin"
   ],
   "skills": "./content/skills/",
-  "agents": "./content/agents/",
-  "commands": "./content/commands/",
-  "hooks": "./hooks/hooks.json"
+  "agents": [
+    "./content/agents/api-platform-builder.md",
+    "./content/agents/doctrine-architect.md",
+    "./content/agents/doctrine-performance-optimizer.md",
+    "./content/agents/symfony-engineer.md",
+    "./content/agents/symfony-reviewer.md",
+    "./content/agents/symfony-security-auditor.md",
+    "./content/agents/symfony-tdd-coach.md"
+  ],
+  "commands": "./content/commands/"
 }
