@@ -8,28 +8,30 @@ Follow this skill exactly as written.
 # Quality Checks (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- Before committing or opening a pull request.
+- Setting up or tuning PHP-CS-Fixer or PHPStan in a Symfony project.
+- A CI quality job fails and the cause must be found and fixed.
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. Detect the tools and configuration files present (`.php-cs-fixer.dist.php`, `phpstan.dist.neon`).
+2. Run the style fixer in dry-run with a diff first, then apply it.
+3. Run PHPStan at the configured level and fix the reported types.
+4. Run the test suite last, after style and analysis are green.
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- Do not raise the PHPStan level or add baseline entries to make a run pass.
+- Keep style-only changes in their own commit, apart from behavior changes.
+- Do not silence an error with an ignore rule without a written reason.
+- Use the runner the project uses (Docker or host), from the runtime context.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- The commands run and their result.
+- The fixes applied, style separated from types.
+- Remaining findings that need a decision.
 
 ## References
 - `reference.md`

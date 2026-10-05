@@ -362,12 +362,11 @@ php bin/console secrets:list --reveal
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console debug:container --env-vars
+- php bin/console debug:container --parameters
+- php bin/console secrets:list
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

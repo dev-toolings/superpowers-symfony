@@ -175,12 +175,11 @@ bin/console debug:config framework messenger
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console about
+- php bin/console debug:router
+- php bin/console doctrine:schema:validate
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

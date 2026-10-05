@@ -414,11 +414,10 @@ protected function defaults(): array
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- php bin/console doctrine:migrations:diff
-- php bin/console doctrine:migrations:migrate
-- ./vendor/bin/phpunit --filter=Doctrine
+- ./vendor/bin/phpunit --filter=Factory
+- FOUNDRY_FAKER_SEED=1234 ./vendor/bin/phpunit (reproduce a data-dependent failure)
+- php bin/console doctrine:schema:validate --env=test
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.

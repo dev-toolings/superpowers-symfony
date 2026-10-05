@@ -11,12 +11,11 @@ Use this reference for implementation details and review criteria specific to `q
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
 - composer validate
+- ./vendor/bin/php-cs-fixer fix --dry-run --diff
 - ./vendor/bin/phpstan analyse
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

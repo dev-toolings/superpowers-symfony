@@ -444,12 +444,11 @@ class CustomViolationMapper implements ViolationMapperInterface
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- ./vendor/bin/phpunit --filter=Voter
-- php bin/console debug:container security
-- ./vendor/bin/phpstan analyse
+- ./vendor/bin/phpunit --filter=Form
+- php bin/console debug:form
+- php bin/console debug:validator 'App\Entity\<Entity>'
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 
