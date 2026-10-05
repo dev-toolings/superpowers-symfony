@@ -2,9 +2,23 @@
 
 # API Platform Filters
 
-> **Version note.** API Platform **v4** introduces the **Parameters API** (`QueryParameter` / `HeaderParameter` + new filter classes) and **no longer recommends** the `#[ApiFilter]` attribute. The `#[ApiFilter(SearchFilter::class, properties:)]` style below is **still supported** but is now the **v3/legacy** approach. See "API Platform v4 — Parameters API" further down for the recommended v4 path.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
 
-## API Platform v4 — Parameters API (recommended)
+> **Filter versions.** The **Parameters API** (`QueryParameter` /
+> `HeaderParameter` + filter classes) is the only recommended path. Since
+> **4.4**, the `#[ApiFilter]` attribute, the legacy `SearchFilter`,
+> `BooleanFilter`, `NumericFilter`, `BackedEnumFilter` and `OrderFilter`, and
+> the `AbstractFilter` base class are **deprecated** (removed in 6.0): they
+> still work in 4.4 and 5.0. `php bin/console api:upgrade-filter` (**4.4+**)
+> rewrites `#[ApiFilter]` declarations to `QueryParameter`. On **4.3**
+> (Symfony 6.4 LTS), use the Parameters API with the 4.3 classes listed below;
+> the legacy section stays for 4.3 and 3.4 codebases.
+
+## Parameters API (recommended, v4+)
 
 > "For maximum flexibility and to ensure future compatibility, it is strongly recommended to configure your filters via the `parameters` attribute using `QueryParameter`. The legacy method using the `ApiFilter` attribute is not recommended."
 
@@ -50,17 +64,23 @@ class Product
 }
 ```
 
-### Modern v4 filter classes
+### Modern filter classes
 
-| Class | Role |
-|---|---|
-| `ExactFilter` | exact equality (`=`) |
-| `PartialSearchFilter` | `LIKE %value%` |
-| `ComparisonFilter` | decorator adding `gt`, `gte`, `lt`, `lte`, `ne` |
-| `SortFilter` | sorting (replaces `OrderFilter`) |
-| `FreeTextQueryFilter` | multi-property filtering through a single parameter |
-| `OrFilter` | decorator forcing OR logic instead of AND |
-| `IriFilter` | filter on an IRI / related resource |
+| Class | Role | Since |
+|---|---|---|
+| `ExactFilter` | exact equality (`=`); also booleans, numbers, backed enums | 4.2 |
+| `PartialSearchFilter` | `LIKE %value%` | 4.2 |
+| `StartSearchFilter` / `EndSearchFilter` | `LIKE value%` / `LIKE %value` | 4.4 |
+| `WordStartSearchFilter` | matches the start of any word | 4.4 |
+| `ComparisonFilter` | decorator adding `gt`, `gte`, `lt`, `lte`, `ne`; `[between]=X..Y` in **5.0** | 4.3 |
+| `SortFilter` | sorting (replaces `OrderFilter`) | 4.3 |
+| `FreeTextQueryFilter` | multi-property filtering through a single parameter | 4.2 |
+| `OrFilter` | decorator forcing OR logic instead of AND | 4.2 |
+| `IriFilter` | filter on an IRI / related resource | 4.2 |
+| `ChainFilter` | compose several filters on one parameter | 4.4 |
+
+`DateFilter` and `ExistsFilter` are not deprecated: in **5.0** they no longer
+extend `AbstractFilter` (same class names, same URL syntax).
 
 Use `:property` placeholders in parameter keys for dynamic multi-property filtering.
 
@@ -131,9 +151,23 @@ Metadata is separated from runtime: property expansion + OpenAPI documentation h
 
 ---
 
-## Legacy `#[ApiFilter]` (v3 / still supported in v4)
+## Legacy `#[ApiFilter]` (deprecated since 4.4, removed in 6.0)
 
-The patterns below use the `#[ApiFilter]` attribute — the **v3.4-recommended** style. They keep working in v4 but the Parameters API above is preferred for new code.
+The patterns below use the `#[ApiFilter]` attribute, the style recommended up
+to 3.4. They still work in 4.4 and 5.0 (with deprecations). On **4.3** they
+are only needed for what its filter set lacks (`start` / `end` search); on
+**3.4** they are the only option. Migrate with this table (URL
+syntax is unchanged), or let `api:upgrade-filter` (4.4+) rewrite them:
+
+| Legacy | Replacement |
+|---|---|
+| `SearchFilter` `exact` / `partial` | `ExactFilter` / `PartialSearchFilter` |
+| `SearchFilter` `start` / `end` | `StartSearchFilter` / `EndSearchFilter` (4.4+) |
+| `SearchFilter` on a relation (IRI) | `IriFilter` |
+| `BooleanFilter`, `NumericFilter`, `BackedEnumFilter` | `ExactFilter` (typed by the property) |
+| `OrderFilter` | `SortFilter` |
+| `RangeFilter` | `ComparisonFilter` with `[between]` (5.0; keep `RangeFilter` on 4.4 and 4.3) |
+| `DateFilter`, `ExistsFilter` | unchanged, not deprecated |
 
 ## Built-in Filters
 
@@ -195,6 +229,10 @@ GET /api/products?createdAt[strictly_before]=2024-12-31
 ```
 
 ### Range Filter
+
+> Deprecated in **5.0** in favor of `ComparisonFilter`, which gained
+> `[between]=X..Y` in 5.0. On 4.4 and 4.3, `RangeFilter` is still the way to
+> express `between`.
 
 ```php
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
@@ -279,6 +317,11 @@ GET /api/products?exists[description]=true  # Has description
 ```
 
 ## Custom Filters
+
+> These examples extend `AbstractFilter`, **deprecated since 4.4** (removed in
+> 6.0). For new code on 4.3+, implement `FilterInterface` and read the value
+> from `$context['parameter']`, as in "Custom filter v4" above. Keep the
+> `AbstractFilter` form for 4.3 and 3.4 codebases.
 
 ### Simple Custom Filter
 
