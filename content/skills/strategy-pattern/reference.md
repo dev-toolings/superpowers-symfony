@@ -379,9 +379,9 @@ class PaymentServiceTest extends TestCase
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console debug:container --tag=<tag>
+- php bin/console debug:autowiring <Interface>
+- ./vendor/bin/phpunit --filter=Strategy
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.

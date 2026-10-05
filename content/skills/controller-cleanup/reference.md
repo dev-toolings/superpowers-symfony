@@ -409,9 +409,9 @@ class OrderControllerTest extends WebTestCase
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- ./vendor/bin/phpunit --filter=Controller
+- php bin/console debug:router
+- ./vendor/bin/phpstan analyse src/Controller
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.

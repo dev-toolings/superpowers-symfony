@@ -13,28 +13,30 @@ allowed-tools:
 # Strategy Pattern (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- One operation has several interchangeable algorithms chosen at runtime, such as payment providers or export formats.
+- A `switch` or `match` on a type string keeps growing.
+- New variants must be added without editing the code that selects them.
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. Define the strategy interface, with a `supports()` method or a key per strategy.
+2. Tag every implementation through `#[AutoconfigureTag]` on the interface or on each class.
+3. Inject them with `#[AutowireIterator]` to try each in order, or `#[AutowireLocator]` to fetch one by key.
+4. Set priorities where evaluation order matters, and register a fallback strategy.
+5. Test each strategy alone, and the selector with fakes.
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- The selector fails explicitly when no strategy supports the input.
+- Keep strategies stateless and independent of each other.
+- Two cases that will not grow do not need the pattern: a `match` is enough.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- The interface and its tagged implementations.
+- The selector, with its order and its fallback.
+- Tests per strategy and for the no-match case.
 
 ## References
 - `reference.md`
