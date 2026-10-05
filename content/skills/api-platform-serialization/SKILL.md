@@ -16,28 +16,33 @@ allowed-tools:
 # Api Platform Serialization (Symfony)
 
 ## Use when
-- Designing or evolving API Platform contracts and operations.
-- Aligning serialization, validation, and security behavior.
+- Operations must expose different fields (list, read, create, update).
+- A related resource must render as an IRI or be embedded.
+- A response needs computed or role-dependent fields.
+- A property needs normalizer options such as a date format.
 
 ## Default workflow
-1. Define operation-level contract and payload boundaries.
-2. Implement resource/DTO/provider/processor changes with explicit mapping.
-3. Apply operation-specific validation and security constraints.
-4. Validate functional behavior across happy and negative paths.
+1. Name groups `entity:operation` and set `normalizationContext` and `denormalizationContext` per operation.
+2. Tag properties with `#[Groups]` from the Serializer `Attribute` namespace, not the old `Annotation` one.
+3. Control relations with `#[ApiProperty(readableLink: false, writableLink: false)]` to force IRIs.
+4. Apply per-property options with `#[Context]` instead of writing a normalizer.
+5. Add computed fields in a custom normalizer, and dynamic groups in a decorator of `api_platform.serializer.context_builder`.
+6. Prevent cycles with `#[MaxDepth]` and `enable_max_depth`, and hide secrets with `#[Ignore]`.
 
 ## Guardrails
-- Keep API contract explicit and version-aware.
-- Avoid exposing internal entity fields implicitly.
-- Prevent drift between docs and actual serialization.
+- Use separate read and write groups: for example `password` only in the create group, `id` only in read groups.
+- A related resource is embedded only when it shares a group with the parent; otherwise it renders as an IRI.
+- `#[MaxDepth]` has no effect unless `enable_max_depth` is true in the context.
+- Keep entities clean: computed fields belong in normalizers.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- API artifacts changed (resource/DTO/provider/processor).
-- Contract/security decisions and rationale.
-- Functional verification results.
+- The groups and contexts per operation, as a field matrix.
+- Normalizers or context builders added, and how they are registered.
+- Tests or OpenAPI output showing the resulting fields.
 
 ## References
 - `reference.md`

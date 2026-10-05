@@ -388,6 +388,6 @@ public function testV2ReturnsNewFormat(): void
 6. **Limit active versions** - max 2-3 at a time
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
 - php bin/console debug:router
+- php bin/console api:openapi:export
+- ./vendor/bin/phpunit --filter=Version

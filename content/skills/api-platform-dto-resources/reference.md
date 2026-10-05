@@ -147,6 +147,6 @@ class Book {}
 The manual provider/processor approach **still works in v4** — Object Mapper is the new *declarative* shortcut, not a forced replacement.
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
+- ./vendor/bin/phpunit --filter=Book
+- php bin/console api:openapi:export
 - php bin/console debug:router

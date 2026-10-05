@@ -349,6 +349,6 @@ class User
 6. **Document with OpenAPI**: Groups affect schema generation
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
-- php bin/console debug:router
+- ./vendor/bin/phpunit --filter=Serialization
+- php bin/console api:openapi:export
+- php bin/console debug:container --tag=serializer.normalizer

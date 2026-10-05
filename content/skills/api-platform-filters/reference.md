@@ -460,6 +460,6 @@ class Product
 6. **Validate filter values** in custom filters
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
+- ./vendor/bin/phpunit --filter=Filter
+- php bin/console api:openapi:export
 - php bin/console debug:router
