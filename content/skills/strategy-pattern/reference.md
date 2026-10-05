@@ -286,13 +286,13 @@ class XlsxExporter implements ExporterInterface
 
 namespace App\Export;
 
-use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class ExportService
 {
     public function __construct(
-        #[TaggedLocator('app.exporter', defaultIndexMethod: 'getFormat')]
+        #[AutowireLocator('app.exporter', defaultIndexMethod: 'getFormat')]
         private ServiceLocator $exporters,
     ) {}
 
