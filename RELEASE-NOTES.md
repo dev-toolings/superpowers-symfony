@@ -1,5 +1,28 @@
 # Release Notes
 
+## v0.3.1
+
+Accuracy fixes in the reference material, each checked against the upstream
+sources (Doctrine ORM 3.7, Symfony 7.4 and 8.1, API Platform 4).
+
+### Fixed
+- **Doctrine**: ORM 3 did not remove `setFetchMode()`, and `PARTIAL` is back
+  from ORM 3.3; the fetch-modes skill, its description and three agents said
+  otherwise. `clear()` takes no argument in ORM 3, and proxy initialization is
+  checked with `isUninitializedObject()`.
+- **API Platform**: `#[RateLimit]` does nothing on an `#[ApiResource]` (it is
+  read from the controller), so the security example now limits in a state
+  processor. Test examples use the v4 defaults (`member`, `totalItems`, 30
+  items per page). The versioning listener sends an RFC 9745 `Deprecation`
+  value, and its tests no longer use an undefined client.
+- **Messenger**: the retry strategy relied on a `SentStamp::getSentAt()` that
+  does not exist; the failed-message service is typed
+  `ListableReceiverInterface`. Scheduler examples pass `from`, `until` and the
+  timezone as arguments, and no longer call `PostRunEvent::getDuration()`.
+- **Tests**: `#[DataProvider]` instead of the annotation, mocks of the
+  EntityManager scoped to orchestration tests, and the Prophecy dependency
+  stated.
+
 ## v0.3.0
 
 ### Changed
