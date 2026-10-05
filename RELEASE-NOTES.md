@@ -1,5 +1,45 @@
 # Release Notes
 
+## v0.4.0
+
+### API Platform 5, with the LTS line kept
+API Platform 5.0 shipped on 2026-09-17. The library now targets it and keeps
+the versions Symfony LTS users run:
+
+| API Platform | Symfony | Role |
+|---|---|---|
+| 5.0 | 7.4 LTS / 8.x | target: examples are written for it |
+| 4.4 | 7.4 LTS / 8.x | 4 to 5 bridge, deltas flagged inline |
+| 4.3 | 6.4 LTS / 7.x / 8.x | last release supporting Symfony 6.4 LTS |
+| 3.4 | 6.4 / 7.1+ | legacy, existing notes kept |
+
+- Every API Platform reference opens with this compatibility note.
+- **filters**: `#[ApiFilter]`, the `SearchFilter` family and `AbstractFilter`
+  are deprecated since 4.4; migration table, `api:upgrade-filter`, and the
+  version each filter class appeared in.
+- **dto-resources**: `ObjectMapperProcessor` is removed in 5.0; the Object
+  Mapper needs Symfony 7.3+, so Symfony 6.4 LTS keeps manual mapping.
+- **tests**: `ApiTestCase` moved to `api-platform/test` in 5.0
+  (`ApiPlatform\Test`), `alwaysBootKernel` defaults to false, and type errors
+  on constrained properties return 422 instead of 400.
+- **resources**: version matrix, `~4.3.0` pinning for Symfony 6.4 LTS, and the
+  `Query` operation, `throwOnNotFound`, `routePriority`, `%param%` and
+  OpenAPI 3.2 additions.
+- The `api-platform-builder` and `symfony-reviewer` agents check the installed
+  version before using or flagging an API.
+
+### Fixed
+- **api-platform-security**: the JWT setup names
+  `lexik/jwt-authentication-bundle` and adds the `json_login` firewall that
+  issues the token.
+- **api-platform-dto-resources**: `read_data` is documented as 4.0+ (absent
+  in 3.4) and only set when the operation reads.
+- **doctrine-migrations**: targets bundle 4.0 with library 3.9 (the library
+  4.0 branch is unreleased), and the install no longer pins the bundle to
+  `^3.0`.
+- **doctrine-fetch-modes**: the duplicated batch section points to
+  `doctrine-batch-processing`.
+
 ## v0.3.1
 
 Accuracy fixes in the reference material, each checked against the upstream
