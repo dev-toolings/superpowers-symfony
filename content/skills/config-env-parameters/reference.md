@@ -353,20 +353,7 @@ php bin/console debug:container --env-vars
 php bin/console secrets:list --reveal
 ```
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console debug:container --env-vars
 - php bin/console debug:container --parameters
 - php bin/console secrets:list
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-

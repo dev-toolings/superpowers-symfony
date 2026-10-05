@@ -323,20 +323,7 @@ jobs:
 5. **Reset state**: clean the database between tests (DAMADoctrineTestBundle / Foundry reset).
 6. **Clean up screenshots**: delete any PNGs produced; never commit them.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - vendor/bin/bdi detect drivers
 - ./vendor/bin/phpunit tests/E2E
 - PANTHER_NO_HEADLESS=1 bin/phpunit --debug
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.

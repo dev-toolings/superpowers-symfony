@@ -303,21 +303,7 @@ public function testCreatesUser(): void
 5. **Use fakes for repositories**: More realistic tests
 6. **Don't over-mock**: Integration tests have value too
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=...
 - ./vendor/bin/phpunit
 - ./vendor/bin/pest --filter=...
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

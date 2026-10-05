@@ -350,20 +350,7 @@ class OrderService
   prefer `wrapInTransaction()` so the code survives the 3.0 upgrade.
 - `Connection::transactional()` (DBAL) is valid across all versions.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=Transaction
 - php bin/console doctrine:schema:validate
 - php bin/console doctrine:schema:update --dump-sql (version column present)
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-

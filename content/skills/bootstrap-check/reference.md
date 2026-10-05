@@ -166,20 +166,7 @@ bin/console debug:config framework messenger
 - [ ] All migrations executed
 - [ ] (Optional) Fixtures loaded for development
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console about
 - php bin/console debug:router
 - php bin/console doctrine:schema:validate
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-

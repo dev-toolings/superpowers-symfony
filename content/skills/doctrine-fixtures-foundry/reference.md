@@ -405,19 +405,7 @@ protected function defaults(): array
   `_enableAutoRefresh()`) still work but are deprecated.
 - Not enabling `flush_once` is **deprecated** (v2.5+).
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=Factory
 - FOUNDRY_FAKER_SEED=1234 ./vendor/bin/phpunit (reproduce a data-dependent failure)
 - php bin/console doctrine:schema:validate --env=test
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.

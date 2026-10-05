@@ -233,20 +233,7 @@ Steps: drop `implements EventSubscriber` and `getSubscribedEvents()`; add
 - **ORM 2.x (legacy)**: subscribers and the single `LifecycleEventArgs` still
   work but are deprecated — migrate before upgrading to 3.0.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
-- php bin/console doctrine:migrations:diff
-- php bin/console doctrine:migrations:migrate
-- ./vendor/bin/phpunit --filter=Doctrine
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
+## Validation commands
+- php bin/console debug:container --tag=doctrine.event_listener
+- php bin/console debug:container --tag=doctrine.orm.entity_listener
+- ./vendor/bin/phpunit --filter=Listener

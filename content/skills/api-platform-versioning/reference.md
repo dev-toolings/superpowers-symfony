@@ -387,21 +387,7 @@ public function testV2ReturnsNewFormat(): void
 5. **Test all versions** - maintain test coverage
 6. **Limit active versions** - max 2-3 at a time
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=Api
 - ./vendor/bin/phpstan analyse
 - php bin/console debug:router
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

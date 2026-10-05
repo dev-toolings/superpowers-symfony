@@ -413,21 +413,7 @@ bin/console debug:autowiring Payment
 5. **Minimal interfaces**: Keep interfaces focused (ISP)
 6. **Decorate, don't modify**: Use decoration for cross-cutting concerns
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - php bin/console debug:autowiring <Type>
 - php bin/console debug:container <service-id>
 - php bin/console lint:container
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
-

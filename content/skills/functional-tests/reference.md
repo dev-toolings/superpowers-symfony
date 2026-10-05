@@ -241,20 +241,7 @@ public static function provideUrls(): \Generator
 - Auth via `loginUser()`, not by replaying the login form.
 - Smoke tests cover key URLs with hardcoded paths.
 
-
-## Skill Operating Checklist
-
-### Design checklist
-- Confirm operation boundaries and invariants first.
-- Minimize scope while preserving contract correctness.
-- Test both happy path and negative path behavior.
-
-### Validation commands
+## Validation commands
 - ./vendor/bin/phpunit --filter=...
 - ./vendor/bin/phpunit
 - ./vendor/bin/pest --filter=...
-
-### Failure modes to test
-- Invalid payload or forbidden actor.
-- Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
