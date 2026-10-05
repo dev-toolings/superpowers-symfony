@@ -338,6 +338,6 @@ class ProcessOrderHandler
 6. **Log failures**: With context for debugging
 
 ## Validation commands
-- php bin/console messenger:consume --limit=1
-- php bin/console messenger:failed:show
+- php bin/console messenger:failed:show --stats
+- php bin/console messenger:failed:show <id> -vv
 - ./vendor/bin/phpunit --filter=Messenger

@@ -221,6 +221,6 @@ php bin/console debug:messenger
   being silently dropped.
 
 ## Validation commands
-- php bin/console messenger:consume --limit=1
-- php bin/console messenger:failed:show
+- php bin/console debug:messenger
+- php bin/console messenger:stats
 - ./vendor/bin/phpunit --filter=Messenger
