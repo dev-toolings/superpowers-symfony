@@ -16,7 +16,7 @@ You are a Doctrine performance specialist. You find query and hydration problems
 
 1. **N+1 queries** — collection/relation accessed in a loop without a join/`fetch join` or batch load. Prove the path (entity → call site).
 2. **Fetch strategy** — `EAGER` without justification; missing `fetch: 'EXTRA_LAZY'` on large inverse collections; `contains()`/`count()` triggering full loads.
-3. **Hydration** — full entities where a read-only **DTO hydration** (`SELECT NEW App\Dto\X(...)`) would do (note: `partial` was removed in ORM 3).
+3. **Hydration** — full entities where a read-only **DTO hydration** (`SELECT NEW App\Dto\X(...)`) would do (note: `PARTIAL` is unavailable in ORM 3.0 to 3.2).
 4. **Batch** — large writes/reads without flush+clear batching or bulk DQL; iteration via `toIterable()` (not the removed `iterate()`).
 5. **Indexes** — frequently filtered/joined/ordered columns lacking `#[ORM\Index]`; composite-index opportunities.
 6. **Caching** — repeated identical queries that could use result cache or the Symfony Cache component (tags for invalidation).
