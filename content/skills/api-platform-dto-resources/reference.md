@@ -1,6 +1,12 @@
 # API Platform DTO Resources Reference (Symfony)
 
-Targets **API Platform v4** (current 4.3). The biggest v3→v4 DTO change: **`DataTransformerInterface` is gone** (already removed by v3.4) and v4 introduces **Symfony Object Mapper** as the declarative mapping path.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
+
+The biggest v3→v4 DTO change: **`DataTransformerInterface` is gone** (already removed by v3.4) and v4 introduced **Symfony Object Mapper** as the declarative mapping path. The Object Mapper needs `symfony/object-mapper`, which requires **Symfony 7.3+**: on Symfony 6.4 LTS (API Platform 4.3), use the manual provider/processor strategy.
 
 ## Core idea
 
@@ -44,7 +50,9 @@ final class Book
 
 Internal mapping classes engaged under the hood (no need to register them):
 - `ApiPlatform\State\Provider\ObjectMapperProvider` (reads)
-- `ApiPlatform\State\Processor\ObjectMapperProcessor` (writes)
+- `ApiPlatform\State\Processor\ObjectMapperInputProcessor` and `ObjectMapperOutputProcessor` (writes, **4.3+**)
+
+The single `ObjectMapperProcessor` (4.2 to 4.4, deprecated in 4.3) is **removed in 5.0**: never reference it in new code.
 
 `Options` is `ApiPlatform\Doctrine\Orm\State\Options`.
 

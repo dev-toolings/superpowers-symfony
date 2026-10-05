@@ -1,6 +1,6 @@
 ---
 name: api-platform-dto-resources
-description: Map entities to API DTOs in API Platform v4 with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts
+description: Map entities to API DTOs in API Platform (v5, 4.4, 4.3) with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts
 capabilities: [read, search, edit, shell]
 tags: [api-platform]
 # projected by `bun run build` — do not edit by hand
@@ -31,7 +31,8 @@ allowed-tools:
 ## Guardrails
 - The automatic Object Mapper provider and processor only apply when `stateOptions` has an `entityClass` and both the DTO and the entity carry `#[Map]`.
 - `DataTransformerInterface` is gone: use Object Mapper or a provider and processor.
-- v3.4 has no Object Mapper: map manually in a `ProviderInterface` and a `ProcessorInterface`.
+- No Object Mapper on 3.4 or on Symfony 6.4 LTS (it needs Symfony 7.3+): map manually in a `ProviderInterface` and a `ProcessorInterface`.
+- `ObjectMapperProcessor` is removed in 5.0: the automatic path uses `ObjectMapperInputProcessor` and `ObjectMapperOutputProcessor` (4.3+).
 - Never return the entity itself from a DTO resource: only mapped fields reach the client.
 
 ## Progressive disclosure
