@@ -320,9 +320,9 @@ git push origin feature/product-filtering
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console about
+- php bin/console doctrine:migrations:status
+- git status
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.

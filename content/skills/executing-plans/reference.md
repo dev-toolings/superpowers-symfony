@@ -280,8 +280,8 @@ Before merging feature branch:
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
+- ./vendor/bin/phpunit
+- ./vendor/bin/php-cs-fixer fix --dry-run --diff
 - ./vendor/bin/phpstan analyse
 
 ### Failure modes to test

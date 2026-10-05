@@ -421,9 +421,9 @@ class OrderReadRepository
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console debug:messenger
+- php bin/console debug:container --tag=messenger.message_handler
+- ./vendor/bin/phpunit --filter=Handler
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
