@@ -359,12 +359,11 @@ class OrderService
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- php bin/console doctrine:migrations:diff
-- php bin/console doctrine:migrations:migrate
-- ./vendor/bin/phpunit --filter=Doctrine
+- ./vendor/bin/phpunit --filter=Transaction
+- php bin/console doctrine:schema:validate
+- php bin/console doctrine:schema:update --dump-sql (version column present)
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

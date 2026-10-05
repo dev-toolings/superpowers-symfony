@@ -295,12 +295,11 @@ class ProcessProductsCommand extends Command
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- php bin/console doctrine:migrations:diff
-- php bin/console doctrine:migrations:migrate
-- ./vendor/bin/phpunit --filter=Doctrine
+- php bin/console <batch-command> -vv (watch memory per batch)
+- php -d memory_limit=128M bin/console <batch-command>
+- ./vendor/bin/phpunit --filter=Batch
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

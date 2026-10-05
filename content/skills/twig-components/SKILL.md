@@ -13,28 +13,31 @@ allowed-tools:
 # Twig Components (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- Extracting a repeated piece of Twig into a reusable component.
+- Building a component with props, slots, computed logic, or CVA variants.
+- Making a component reactive with Live Components (search, counters, forms).
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. Choose the kind: anonymous (template only), class-based `#[AsTwigComponent]`, or `#[AsLiveComponent]`.
+2. Declare props as public mutable properties; use `mount()` for derived values.
+3. Expose content injection through blocks (slots) rather than more props.
+4. For Live Components, mark writable state with `#[LiveProp(writable: true)]` and debounce user input.
+5. Test the PHP class with `InteractsWithTwigComponents`.
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- Never make public props `readonly`: they are assigned after instantiation.
+- Inject services as `private readonly`, never as public props.
+- Only mark a `LiveProp` writable when the browser must change it.
+- Keep one responsibility per component.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- Component classes and templates, with their props and slots.
+- Live state and actions, when the component is reactive.
+- A component test for mount and render.
 
 ## References
 - `reference.md`

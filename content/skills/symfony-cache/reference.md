@@ -391,12 +391,11 @@ bin/console cache:pool:invalidate-tags cache.products products
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- php bin/console messenger:consume --limit=1
-- php bin/console messenger:failed:show
-- ./vendor/bin/phpunit --filter=Messenger
+- php bin/console cache:pool:list
+- php bin/console cache:pool:clear <pool>
+- ./vendor/bin/phpunit --filter=Cache
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

@@ -432,12 +432,11 @@ class ContactForm extends AbstractController
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console debug:twig-component
+- php bin/console lint:twig templates/components
+- ./vendor/bin/phpunit --filter=Component
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
 - Boundary values / not-found cases.
-- Retry or partial-failure behavior for async flows.
 

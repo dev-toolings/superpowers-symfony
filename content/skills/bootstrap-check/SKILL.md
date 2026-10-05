@@ -13,28 +13,31 @@ allowed-tools:
 # Bootstrap Check (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- Starting work on an unfamiliar or freshly cloned Symfony project.
+- The application fails to boot, the container does not compile, or routes are missing.
+- Checking `.env`, `config/packages/*`, Doctrine, API Platform or Messenger setup before a change.
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. Confirm `.env` exists and defines `APP_SECRET`, `DATABASE_URL` and the variables the bundles need.
+2. Confirm `vendor/` is installed and `bin/console about` runs.
+3. Compile the container (`cache:clear`) and list services and routes.
+4. Check the database connection and that the schema matches the mappings.
+5. Check the optional stacks present: API Platform resources, Messenger transports.
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- Read only: report what is missing, do not rewrite configuration while checking.
+- Never print secret values from `.env` or the vault.
+- Prefer ACLs or the correct user over `chmod 777` for cache permission issues.
+- Run Doctrine checks against a development database, never production.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- The checklist with each item passed or failed.
+- The exact fix for each failure (command or file to change).
+- What was not checked, and why.
 
 ## References
 - `reference.md`
