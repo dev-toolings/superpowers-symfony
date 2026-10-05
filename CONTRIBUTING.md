@@ -31,7 +31,7 @@ bun run build          # regenerate every adapter
 bun run build --list   # see which emitter owns which output
 bun run check          # what CI runs: fails if dist/ is stale
 bun run validate       # pivot + artifacts + Claude Code packaging
-bun run lint           # the five required sections, description quality
+bun run lint           # required sections, description quality, no shared body
 ```
 
 ## Adding a skill
@@ -51,6 +51,8 @@ bun run lint           # the five required sections, description quality
 2. Write the body with the five required sections: `## Use when`,
    `## Default workflow`, `## Guardrails`, `## Output contract`, `## References`.
    Keep it short and imperative — it is an instruction sheet, not documentation.
+   Write `## Use when` and `## Default workflow` for this skill alone: the lint
+   fails when two skills share them, since they decide when a skill is offered.
 
 3. Put the depth in a sibling `reference.md`. If the body mentions `reference.md`,
    the file must exist; validation enforces it.
