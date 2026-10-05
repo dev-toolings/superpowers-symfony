@@ -2,17 +2,17 @@
   "namespace": "symfony",
   "version": "0.3.1",
   "repo": "https://github.com/dev-toolings/superpowers-symfony",
-  "description": "Version-accurate Symfony expertise for coding agents: API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Messenger, security, and pragmatic architecture.",
+  "description": "Version-accurate Symfony expertise for coding agents: API Platform 5 (4.x supported), Doctrine ORM 3, TDD with Pest & PHPUnit, Messenger, security, and pragmatic architecture.",
   "targets": {
     "symfony": "7.4 LTS / 8.x (6.4 LTS legacy)",
-    "apiPlatform": "v4 (v3 legacy)",
+    "apiPlatform": "v5 (4.4 bridge; 4.3 for Symfony 6.4 LTS; 3.4 legacy)",
     "doctrineOrm": "3.x",
     "php": "8.2 – 8.4"
   },
   "tagGroups": {
     "api-platform": {
       "label": "API Platform",
-      "summary": "Resources, filters, serialization, state providers/processors, security and versioning for API Platform v4.",
+      "summary": "Resources, filters, serialization, state providers/processors, security and versioning for API Platform 5, 4.4 and 4.3.",
       "globs": ["src/ApiResource/**", "src/State/**", "src/Dto/**", "config/packages/api_platform.yaml"]
     },
     "doctrine": {

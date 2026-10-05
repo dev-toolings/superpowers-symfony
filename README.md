@@ -1,6 +1,6 @@
 # Superpowers Symfony — a Symfony skill library for coding agents
 
-> **Version-accurate Symfony expertise for AI coding agents.** 44 expert skills, 7 specialized agents and 13 commands covering **API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Symfony Messenger, security/voters, and DDD / hexagonal architecture** — usable from Claude Code, Codex CLI, Grok Build, OpenCode, Cursor, Windsurf, GitHub Copilot, Gemini CLI, aider, or by hand.
+> **Version-accurate Symfony expertise for AI coding agents.** 44 expert skills, 7 specialized agents and 13 commands covering **API Platform 5 (4.x supported), Doctrine ORM 3, TDD with Pest & PHPUnit, Symfony Messenger, security/voters, and DDD / hexagonal architecture**. Usable from Claude Code, Codex CLI, Grok Build, OpenCode, Cursor, Windsurf, GitHub Copilot, Gemini CLI, aider, or by hand.
 
 ![Symfony](https://img.shields.io/badge/Symfony-7.4_LTS_%7C_8.x-000000?logo=symfony&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.2–8.4-777BB4?logo=php&logoColor=white)
@@ -8,7 +8,7 @@
 ![AGENTS.md](https://img.shields.io/badge/AGENTS.md-supported-2ea44f)
 ![License: MIT](https://img.shields.io/github/license/dev-toolings/superpowers-symfony)
 
-**Superpowers Symfony** gives coding agents deep, version-accurate **Symfony** expertise — from **Doctrine** schema design and **API Platform** REST/GraphQL APIs to **test-driven development**, async **Messenger** workflows, caching, rate limiting, and clean architecture. It targets **Symfony 7.4 LTS and 8.x** (6.4 LTS as legacy), **API Platform v4** (v3 legacy), and **Doctrine ORM 3** — so the guidance, signatures and code examples match the framework you actually run.
+**Superpowers Symfony** gives coding agents deep, version-accurate **Symfony** expertise: from **Doctrine** schema design and **API Platform** REST/GraphQL APIs to **test-driven development**, async **Messenger** workflows, caching, rate limiting, and clean architecture. It targets **Symfony 7.4 LTS and 8.x** (6.4 LTS as legacy), **API Platform 5** (4.4 bridge, 4.3 for Symfony 6.4 LTS, 3.4 legacy), and **Doctrine ORM 3**, so the guidance, signatures and code examples match the framework you actually run.
 
 The content is deliberately vendor-neutral: skills are plain Markdown in the open
 [Agent Skills](https://agentskills.io) layout, and the per-harness packaging is
@@ -101,12 +101,12 @@ run it first by `AGENTS.md` and by the generated rule indexes.
 
 | Skill | Description |
 | --- | --- |
-| `api-platform-dto-resources` | Map entities to API DTOs in API Platform v4 with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts |
-| `api-platform-filters` | Implement API Platform filters - v4 Parameters API (QueryParameter) and legacy #[ApiFilter] - for search, date, range, boolean, and custom filtering |
-| `api-platform-resources` | Configure API Platform v4 resources with explicit operations, pagination, and typed OpenAPI for clean, versioned REST/GraphQL APIs |
+| `api-platform-dto-resources` | Map entities to API DTOs in API Platform (v5, 4.4, 4.3) with the Symfony Object Mapper (#[Map], stateOptions) for decoupled input/output contracts |
+| `api-platform-filters` | Implement API Platform filters - Parameters API (QueryParameter, v5/4.4/4.3) and the #[ApiFilter] attribute deprecated since 4.4 - for search, date, range, boolean, and custom filtering |
+| `api-platform-resources` | Configure API Platform resources (v5, 4.4, 4.3) with explicit operations, pagination, and typed OpenAPI for clean, versioned REST/GraphQL APIs |
 | `api-platform-security` | Secure API Platform resources with security expressions, voters, securityPostValidation, and operation-level access control |
 | `api-platform-serialization` | Control API Platform serialization with groups, #[Context], IRI links (readableLink/writableLink), and custom context builders |
-| `api-platform-state-providers` | Master API Platform v4 State Providers and Processors (ProviderInterface/ProcessorInterface) to decouple data retrieval and persistence from entities |
+| `api-platform-state-providers` | Master API Platform State Providers and Processors (v5, 4.4, 4.3) (ProviderInterface/ProcessorInterface) to decouple data retrieval and persistence from entities |
 | `api-platform-tests` | Test API Platform resources with ApiTestCase; assert collections, items, filters, JSON schema, and authentication |
 | `api-platform-versioning` | Evolve API Platform APIs via deprecation (deprecationReason/sunset, RFC 8594/9745), the recommended alternative to versioning; plus path/header strategies |
 

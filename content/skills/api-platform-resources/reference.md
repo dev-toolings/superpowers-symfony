@@ -1,8 +1,14 @@
 # API Platform Resources Reference (Symfony)
 
-Targets **API Platform v4** (current 4.3). v3.4 deltas are flagged inline. Implementation details + review criteria for `api-platform-resources`.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
 
-## Packages (v3/v4 split)
+Implementation details + review criteria for `api-platform-resources`.
+
+## Packages and supported versions
 
 API Platform v2 shipped a monolith `api-platform/core`. **v3/v4 split it into components** — install only what you need:
 
@@ -11,9 +17,19 @@ composer require api                       # Flex alias → api-platform/symfony
 composer require api-platform/symfony      # Symfony bridge (HTTP, routing, bundle)
 composer require api-platform/doctrine-orm # Doctrine ORM state providers/processors
 composer require api-platform/graphql      # GraphQL (optional)
+composer require --dev api-platform/test   # ApiTestCase, 5.0 only (see api-platform-tests)
 ```
 
-v4 requires **PHP 8.2+** and **Symfony 6.4 / 7.x** (LTS target = 7.4). v3.4 has the same component split.
+| API Platform | Symfony | PHP | Status |
+|---|---|---|---|
+| **5.0** | 7.4 LTS / 8.x | 8.2+ | stable, target |
+| **4.4** | 7.4 LTS / 8.x | 8.2+ | 4 to 5 bridge: 5.0 features plus deprecated APIs |
+| **4.3** | 6.4 LTS / 7.x / 8.x | 8.2+ | last release supporting Symfony 6.4 LTS |
+| **3.4** | 6.4 / 7.1+ | 8.1+ | unmaintained, legacy |
+
+From 4.4, `api-platform/doctrine-orm` requires `doctrine/orm` `^2.17 || ^3.3`.
+To stay on Symfony 6.4 LTS, pin `api-platform/*` to `~4.3.0`. Every version
+uses the same component split.
 
 ## Operations — explicit declaration
 
@@ -190,6 +206,25 @@ api-platform bookshop-api --framework=symfony --with-docker   # installer
 symfony new bookshop-api && cd bookshop-api && symfony composer require api
 bin/console make:entity --api-resource
 ```
+
+## New in 4.4 and 5.0
+
+- **`Query` operation (4.4+)**: `ApiPlatform\Metadata\Query` is a collection
+  operation for the HTTP `QUERY` method, reading its criteria from a JSON or
+  form body instead of the URL. Useful for search payloads too large for a query
+  string.
+- **`throwOnNotFound` (4.4+)**: a `POST` or `PUT` with URI variables does not 404
+  by default when the read returns nothing. Set `throwOnNotFound: true` on
+  action endpoints such as `POST /books/{id}/discount` so a missing resource
+  returns 404 instead of reaching your processor.
+- **`routePriority` (5.0)**: controls the order in which operation routes are
+  matched, for overlapping `uriTemplate` values.
+- **`%param%` in resource config (5.0)**: container parameters resolve in
+  attributes, YAML and XML resource configuration.
+- **OpenAPI 3.2 (4.4+)** output, and the Scalar API Reference as an alternative
+  documentation UI.
+
+None of these exist on **4.3**; check the installed version before using them.
 
 ## Validation commands
 - php bin/console debug:router

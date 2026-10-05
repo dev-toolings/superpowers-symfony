@@ -2,7 +2,13 @@
 
 # API Platform Serialization
 
-> **Namespace note (Symfony 7+ / API Platform v4).** Serializer attributes live under `Symfony\Component\Serializer\Attribute\*` (renamed from `Annotation\*`): `Groups`, `Ignore`, `SerializedName`, `SerializedPath`, `Context`, `MaxDepth`, `DiscriminatorMap`. The old `Annotation\*` names still resolve but new code should use `Attribute\*`. The core serialization model (groups, contexts, `#[ApiProperty]`) is stable v3→v4.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
+
+> **Namespace note (Symfony 7+ / API Platform 4+).** Serializer attributes live under `Symfony\Component\Serializer\Attribute\*` (renamed from `Annotation\*`): `Groups`, `Ignore`, `SerializedName`, `SerializedPath`, `Context`, `MaxDepth`, `DiscriminatorMap`. The old `Annotation\*` names still resolve but new code should use `Attribute\*`. The core serialization model (groups, contexts, `#[ApiProperty]`) is stable v3→v4.
 
 ## Property-level context — `#[Context]` (Symfony 7.0+)
 
