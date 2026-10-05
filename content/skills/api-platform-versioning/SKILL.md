@@ -16,28 +16,32 @@ allowed-tools:
 # Api Platform Versioning (Symfony)
 
 ## Use when
-- Designing or evolving API Platform contracts and operations.
-- Aligning serialization, validation, and security behavior.
+- A field, operation, or resource is being renamed or removed and consumers need time to migrate.
+- Announcing a removal date to clients with `Sunset` and `Deprecation` headers.
+- Deciding between deprecation and parallel `/v1` and `/v2` surfaces.
+- A breaking representation change that deprecation and groups cannot express.
 
 ## Default workflow
-1. Define operation-level contract and payload boundaries.
-2. Implement resource/DTO/provider/processor changes with explicit mapping.
-3. Apply operation-specific validation and security constraints.
-4. Validate functional behavior across happy and negative paths.
+1. Try deprecation first: set `deprecationReason` on the resource, the operation, or `#[ApiProperty]`.
+2. Add `sunset:` with a date, and on v4 add `headers` carrying `Deprecation` (RFC 9745) and a `Link` with `rel="successor-version"`.
+3. Before v4, emit those headers from a `KernelEvents::RESPONSE` listener.
+4. Only if still breaking, expose parallel `uriTemplate` values (`/v1`, `/v2`) with distinct groups, or output DTOs with one provider per version.
+5. Mark the old operation as deprecated in OpenAPI, document the changes per version, and test every active version.
 
 ## Guardrails
-- Keep API contract explicit and version-aware.
-- Avoid exposing internal entity fields implicitly.
-- Prevent drift between docs and actual serialization.
+- Prefer deprecation: path versioning is the fallback, not the default.
+- Always set a sunset date and keep at most 2 or 3 versions active.
+- `deprecationReason` and `sunset` are stable across v3 and v4, but the RFC 9745 `headers` option is v4-era: verify it on your installed version.
+- Use groups for minor additive changes rather than a new version.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- API artifacts changed (resource/DTO/provider/processor).
-- Contract/security decisions and rationale.
-- Functional verification results.
+- The deprecation or versioning strategy chosen and why.
+- Deprecated elements with their sunset dates and successor links.
+- Tests for each active version and for the headers.
 
 ## References
 - `reference.md`

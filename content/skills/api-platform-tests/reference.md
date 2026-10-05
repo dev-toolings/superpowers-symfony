@@ -364,5 +364,5 @@ public function testTypeMismatchCollectsAllErrors(): void
 
 ## Validation commands
 - ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
+- ./vendor/bin/phpunit --list-tests
 - php bin/console debug:router

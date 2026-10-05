@@ -366,6 +366,6 @@ These pair with voters that attach reasons via the `?Vote $vote` argument (Symfo
 6. **Audit sensitive operations** - log access attempts
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
+- ./vendor/bin/phpunit --filter=Security
+- php bin/console debug:config security
 - php bin/console debug:router

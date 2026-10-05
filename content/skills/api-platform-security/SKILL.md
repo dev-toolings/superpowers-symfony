@@ -16,28 +16,34 @@ allowed-tools:
 # Api Platform Security (Symfony)
 
 ## Use when
-- Designing or evolving API Platform contracts and operations.
-- Aligning serialization, validation, and security behavior.
+- Restricting who may call each operation of an API Platform resource.
+- Authorization depends on the object (owner) or on the submitted data.
+- Users must see only a subset of a collection.
+- Fields must be hidden depending on role or ownership.
 
 ## Default workflow
-1. Define operation-level contract and payload boundaries.
-2. Implement resource/DTO/provider/processor changes with explicit mapping.
-3. Apply operation-specific validation and security constraints.
-4. Validate functional behavior across happy and negative paths.
+1. Set `security` per operation with `is_granted()`, `object`, and `user`, plus a `securityMessage`.
+2. Move complex rules into voters: `is_granted('POST_EDIT', object)`.
+3. When the rule depends on input, use `securityPostDenormalize`, or `securityPostValidation` to run after the Validator.
+4. Scope rows with a `QueryCollectionExtensionInterface` (and `QueryItemExtensionInterface`) or a state provider.
+5. Hide fields with serializer groups and a decorated context builder, and guard the firewall with `access_control`.
+6. Test both the grant and the deny case for every protected operation.
 
 ## Guardrails
-- Keep API contract explicit and version-aware.
-- Avoid exposing internal entity fields implicitly.
-- Prevent drift between docs and actual serialization.
+- Never filter rows with a `security` expression on a collection: it gates the whole collection, it does not scope it.
+- Order of checks: `security`, denormalization, `securityPostDenormalize`, validation, `securityPostValidation`.
+- `previous_object` exists only in `securityPostDenormalize`, and `request` only at resource level.
+- Deny by default and mark secrets such as `password` with `#[Ignore]`.
+- `getAccessDecision()` and the Twig `access_decision()` helper need Symfony 8.1 or later: verify before using them.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- API artifacts changed (resource/DTO/provider/processor).
-- Contract/security decisions and rationale.
-- Functional verification results.
+- The security expression and message per operation, and the voters involved.
+- How collections and fields are scoped per user.
+- Tests covering allowed, forbidden, and anonymous access.
 
 ## References
 - `reference.md`

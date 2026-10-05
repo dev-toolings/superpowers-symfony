@@ -192,6 +192,6 @@ bin/console make:entity --api-resource
 ```
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
 - php bin/console debug:router
+- php bin/console api:openapi:export --yaml
+- ./vendor/bin/phpunit --filter=Api

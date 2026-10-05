@@ -157,6 +157,6 @@ resources:
 This is the notable v4 capability — in v3.4 processors only ran on write methods.
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=Api
-- ./vendor/bin/phpstan analyse
-- php bin/console debug:router
+- ./vendor/bin/phpunit --filter=State
+- php bin/console debug:container --tag=api_platform.state_provider
+- php bin/console debug:container --tag=api_platform.state_processor
