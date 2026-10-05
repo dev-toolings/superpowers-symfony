@@ -6,28 +6,31 @@ Follow this skill exactly as written.
 # Writing Plans (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- A feature touches several layers: entities, services, API, async work.
+- The work must be reviewed, or split across sessions, before coding starts.
+- Scope and risks must be known before committing to an approach.
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. Write the overview: summary, scope in and out, dependencies.
+2. Design the changes: new and modified entities, services and handlers, API endpoints.
+3. Break the work into phases of atomic steps, each starting with its test.
+4. Mark the dependencies between steps and size each one (S, M, L).
+5. Write the acceptance criteria, and the risks with their mitigation.
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- Every step can be completed and tested on its own.
+- Name concrete files, classes and endpoints, not intentions.
+- List what is out of scope instead of dropping it silently.
+- Start from a template in `reference.md` (CRUD, background job, integration) when one fits.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- A plan with overview, design, steps, acceptance criteria and risks.
+- Step dependencies and sizes.
+- Open questions for the reviewer.
 
 ## References
 - `reference.md`

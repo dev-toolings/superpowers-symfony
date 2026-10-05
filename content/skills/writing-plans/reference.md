@@ -216,9 +216,9 @@ class Order
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console debug:router (planned endpoints do not already exist)
+- php bin/console doctrine:mapping:info (planned entities and relations)
+- git status (planning changes no code)
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.

@@ -13,28 +13,29 @@ allowed-tools:
 # Effective Context (Symfony)
 
 ## Use when
-- Refining architecture/workflows/context handling in Symfony projects.
-- Planning and executing medium/complex changes safely.
+- Asking for help on a Symfony problem, or handing a task over to someone else.
+- A previous answer was wrong because versions, bundles or constraints were missing.
+- Reporting an error that needs diagnosis.
 
 ## Default workflow
-1. Establish current boundaries, constraints, and coupling points.
-2. Propose smallest coherent architectural adjustment.
-3. Execute in checkpoints with validation at each stage.
-4. Summarize tradeoffs and follow-up backlog.
+1. State the goal and the expected behavior in one or two sentences.
+2. Give the versions: Symfony, PHP, and the bundles involved.
+3. Include only the files on the path of the problem: entity, service, controller, configuration.
+4. Paste the full error with its stack trace, and the relevant log lines.
+5. List the constraints (performance, backward compatibility, existing patterns) and what was already tried.
 
 ## Guardrails
-- Use existing project patterns by default.
-- Avoid broad refactors without explicit need.
-- Keep decision log clear and auditable.
+- Send the code on the path of the problem: not the whole `src/`, not a bare one-line question.
+- Do not refer to code that was not shown.
+- Strip secrets and personal data from logs and `.env` excerpts.
 
 ## Progressive disclosure
 - Use this file for execution posture and risk controls.
 - Open references when deep implementation details are needed.
 
 ## Output contract
-- Architecture/workflow changes.
-- Checkpoint validation outcomes.
-- Residual risks and next steps.
+- A context block following the template in `reference.md`: context, goal, current code, observed behavior, attempts, constraints.
+- Versions and bundles, stated explicitly.
 
 ## References
 - `reference.md`

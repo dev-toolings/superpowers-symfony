@@ -226,9 +226,9 @@ The UserService I showed you earlier...
 - Test both happy path and negative path behavior.
 
 ### Validation commands
-- rg --files
-- composer validate
-- ./vendor/bin/phpstan analyse
+- php bin/console about
+- php -v
+- composer show symfony/framework-bundle
 
 ### Failure modes to test
 - Invalid payload or forbidden actor.
