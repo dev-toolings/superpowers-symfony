@@ -247,6 +247,6 @@ php bin/console doctrine:migrations:migrate  --em=customer
 ```
 
 ## Validation commands
-- php bin/console doctrine:migrations:diff
-- php bin/console doctrine:migrations:migrate
+- php bin/console doctrine:schema:validate
+- php bin/console doctrine:mapping:info
 - ./vendor/bin/phpunit --filter=Doctrine
