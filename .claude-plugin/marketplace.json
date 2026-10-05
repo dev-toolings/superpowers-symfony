@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A Symfony skill library for coding agents: guidance, skills, agents and workflows for TDD, Doctrine, API Platform, Messenger, and more.",
-    "version": "0.2.0"
+    "version": "0.2.1"
   },
   "plugins": [
     {
@@ -16,7 +16,7 @@
         "repo": "dev-toolings/superpowers-symfony"
       },
       "description": "Symfony toolkit for coding agents: TDD (Pest/PHPUnit), Doctrine ORM, API Platform, Messenger, Voters, quality checks, architecture patterns, and specialized agents",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "MakFly"
       },

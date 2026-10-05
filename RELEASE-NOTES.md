@@ -1,5 +1,31 @@
 # Release Notes
 
+## v0.2.1
+
+### Fixed
+- **Claude Code installation.** 0.2.0 failed with `agents: Invalid input`: the
+  manifest declared `agents` as a directory, and Claude Code only accepts agent
+  `.md` files there. The seven agents are now listed one by one, and the
+  manifest no longer re-declares `hooks/hooks.json`, which Claude Code loads on
+  its own (#13, #14).
+- **Skill bodies on the wrong subject.** Ten skills carried a template body
+  written for another topic. `symfony-cache` and `rate-limiting` (#15), then
+  `doctrine-fixtures-foundry`, `doctrine-batch-processing`,
+  `doctrine-transactions`, `form-types-validation`, `bootstrap-check`,
+  `quality-checks`, `config-env-parameters` and `twig-components` now describe
+  their own subject, drawn from their `reference.md`. Their validation commands
+  no longer point at Messenger or Voters (#17).
+
+### Changed
+- `## References` no longer lists `docs/complexity-tiers.md`: a loaded skill
+  resolves it beside its own `SKILL.md`, where it does not exist (#16).
+
+### CI
+- `bun run validate` now enforces the per-field manifest rules: `agents` entries
+  are `.md` files, `skills` entries are directories, `hooks/hooks.json` is not
+  re-declared, and every agent in `content/agents/` is listed.
+- The `claude plugin validate` job is blocking and runs through `bunx`.
+
 ## v0.2.0
 
 ### Harness-agnostic

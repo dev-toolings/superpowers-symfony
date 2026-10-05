@@ -3,7 +3,7 @@
 
 Version-accurate Symfony expertise for coding agents: API Platform v4, Doctrine ORM 3, TDD with Pest & PHPUnit, Messenger, security, and pragmatic architecture.
 
-Version 0.2.0 · https://github.com/dev-toolings/superpowers-symfony
+Version 0.2.1 · https://github.com/dev-toolings/superpowers-symfony
 
 ## Target versions
 
