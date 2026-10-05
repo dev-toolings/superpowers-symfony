@@ -32,7 +32,7 @@ allowed-tools:
 ## Guardrails
 - Send `PATCH` with the `application/merge-patch+json` content type.
 - `#[ResetDatabase]` needs PHPUnit 10+ and Foundry 2.9: use the `ResetDatabase` trait on PHPUnit 9.
-- Cover the failure paths too: 404, 422, 401, 403.
+- Cover the failure paths too: 404, 422, 401, 403. A type error on a constrained property is 422 in 5.0 but 400 in 4.4 and earlier.
 - Read the configured items per page rather than hardcoding a page size in assertions.
 
 ## Progressive disclosure

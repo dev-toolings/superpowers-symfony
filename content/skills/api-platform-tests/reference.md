@@ -2,7 +2,23 @@
 
 # Testing API Platform
 
-> **Version note.** `ApiPlatform\Symfony\Bundle\Test\ApiTestCase` and the Client/assertion API are stable v3→v4 (the namespace was `ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase` only in v2). The examples below use **Zenstruck Foundry v2** (`#[ResetDatabase]` attribute style); see "Foundry v2 reset" for the trait-based PHPUnit 9 fallback.
+> **Versions.** Written for **API Platform 5.0** (Symfony 7.4 LTS / 8.x). It also
+> runs on **4.4**, the 4 to 5 bridge release (same features, plus the APIs that
+> 5.0 removed), except where flagged. **4.3** is the last release supporting
+> **Symfony 6.4 LTS**; **3.4** is unmaintained (legacy). Deltas are flagged
+> inline as **5.0**, **4.4+**, **4.3** or **3.4**.
+
+> **Test package (5.0).** `ApiTestCase`, its client and its assertions moved to
+> the `api-platform/test` package (`composer require --dev api-platform/test`),
+> namespace `ApiPlatform\Test\ApiTestCase`. On **4.4**, **4.3** and **3.4**, use
+> `ApiPlatform\Symfony\Bundle\Test\ApiTestCase` (the package exists for 5.x only);
+> that old namespace still works in 5.0 but is deprecated and removed in 6.0.
+> **5.0** also defaults `ApiTestCase::$alwaysBootKernel` to `false`:
+> `createClient()` reuses a kernel that is already booted, so a service replaced
+> with `static::getContainer()->set()` before `createClient()` stays replaced.
+> The client and assertion API itself is unchanged since v3.
+
+> **Version note.** The examples below use **Zenstruck Foundry v2** (`#[ResetDatabase]` attribute style); see "Foundry v2 reset" for the trait-based PHPUnit 9 fallback.
 
 > **Response keys.** API Platform 4 defaults to `serializer.hydra_prefix: false`,
 > so JSON-LD collections expose `member`, `totalItems`, `view` and
@@ -29,7 +45,7 @@ composer require --dev dama/doctrine-test-bundle  # transactional rollback betwe
 
 namespace App\Tests\Functional\Api;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Test\ApiTestCase; // 4.x: ApiPlatform\Symfony\Bundle\Test\ApiTestCase
 use App\Tests\Factory\ProductFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -327,7 +343,7 @@ public function testItemMatchesSchema(): void
 Foundry v2 factories return **real objects** (no Proxy), and the database reset is exposed both as a trait and a PHPUnit 10+ attribute:
 
 ```php
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Test\ApiTestCase; // 4.x: ApiPlatform\Symfony\Bundle\Test\ApiTestCase
 use Zenstruck\Foundry\Attribute\ResetDatabase; // PHPUnit 10+ / Foundry 2.9
 use Zenstruck\Foundry\Test\Factories;
 
@@ -342,6 +358,13 @@ final class ProductTest extends ApiTestCase
 PHPUnit 9 fallback: `use Zenstruck\Foundry\Test\ResetDatabase;` + `use Zenstruck\Foundry\Test\Factories;` traits. `DAMADoctrineTestBundle` wraps each test in a rolled-back transaction (no truncation needed).
 
 ## Asserting denormalization errors (v4)
+
+> **5.0 changed the default status.** A type error on a property that carries a
+> Validator constraint now returns **422** with a `ConstraintViolation` payload,
+> where **4.4** and earlier return **400** with an `Error` payload. Properties
+> without constraints still return 400. A Doctrine
+> `UniqueConstraintViolationException` also maps to 422 by default in 5.0.
+> Tests that assert 400 on such payloads must be updated when upgrading.
 
 When a resource sets `collectDenormalizationErrors: true`, a payload with type mismatches returns **422** with every offending field collected (rather than failing on the first one). Assert the violation list:
 
