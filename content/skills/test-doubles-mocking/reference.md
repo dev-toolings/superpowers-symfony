@@ -125,6 +125,8 @@ public function testDynamicResponse(): void
 
 ## Prophecy (Alternative)
 
+Requires `phpspec/prophecy-phpunit` for `ProphecyTrait` (PHPUnit no longer bundles Prophecy since version 10).
+
 Prophecy provides a different syntax, often considered more readable.
 
 ```php
@@ -169,6 +171,12 @@ class OrderServiceTest extends TestCase
 
 ## Mocking Symfony Services
 
+> **Scope.** These doubles fit unit tests of orchestration code: they prove
+> that `persist()`, `flush()` or a lookup was called, not that the data is
+> valid in the database. Anything that depends on queries, constraints or
+> cascades belongs in a `KernelTestCase` or functional test with the real
+> EntityManager and repositories (see the `functional-tests` skill).
+
 ### EntityManager
 
 ```php
@@ -189,6 +197,9 @@ public function testPersistsEntity(): void
 ```
 
 ### Repository
+
+Mocking the concrete repository works but couples the test to Doctrine; an
+interface plus an in-memory fake (see "Fakes" below) is usually simpler.
 
 ```php
 public function testFindsUser(): void

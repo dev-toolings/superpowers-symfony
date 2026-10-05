@@ -213,9 +213,10 @@ Cheap, high-value: assert that key URLs return a successful (or expected) status
 changes.
 
 ```php
-/**
- * @dataProvider provideUrls
- */
+use PHPUnit\Framework\Attributes\DataProvider;
+
+// PHPUnit 10+: attribute, not the deprecated @dataProvider annotation
+#[DataProvider('provideUrls')]
 public function testPageIsSuccessful(string $url): void
 {
     $client = static::createClient();

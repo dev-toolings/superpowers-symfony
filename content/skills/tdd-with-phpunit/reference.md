@@ -3,8 +3,8 @@
 Use this reference for implementation details and review criteria specific to `tdd-with-phpunit`.
 
 > **Version applicability** — Targets **PHPUnit 10/11** with Symfony 7.4 LTS / 8.x.
-> PHPUnit 10+ uses **PHP attributes** (`#[Test]`, `#[DataProvider]`, `#[CoversClass]`)
-> — the old `/** @test @dataProvider */` annotations are deprecated/removed.
+> PHPUnit 10+ uses **PHP attributes** (`#[Test]`, `#[DataProvider]`, `#[CoversClass]`).
+> The old `/** @test @dataProvider */` annotations are deprecated in PHPUnit 11 and removed in 12.
 > `static::getContainer()` replaces legacy `self::$container`. Console test helpers and
 > 422 assertions are Symfony 8.1+ where noted.
 
