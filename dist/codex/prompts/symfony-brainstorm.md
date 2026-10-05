@@ -30,4 +30,3 @@ Follow this skill exactly as written.
 - Residual risks and next steps.
 
 ## References
-- `docs/complexity-tiers.md`
