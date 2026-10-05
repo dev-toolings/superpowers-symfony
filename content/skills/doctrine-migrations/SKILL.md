@@ -1,6 +1,6 @@
 ---
 name: doctrine-migrations
-description: Create and manage Doctrine migrations (lib 4.x) for schema versioning; handle dependencies, rollbacks, and production deployment
+description: Create and manage Doctrine migrations (bundle 4.x, library 3.9) for schema versioning; handle dependencies, rollbacks, and production deployment
 capabilities: [read, search, edit, shell]
 tags: [doctrine]
 # projected by `bun run build` — do not edit by hand
