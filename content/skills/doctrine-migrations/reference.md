@@ -132,6 +132,6 @@ When you have a non-default EM, also set `em:` (or a dedicated path) in
   library 3.x and 4.x alike.
 
 ## Validation commands
-- php bin/console doctrine:migrations:diff
-- php bin/console doctrine:migrations:migrate
-- ./vendor/bin/phpunit --filter=Doctrine
+- php bin/console doctrine:migrations:status
+- php bin/console doctrine:migrations:migrate --dry-run
+- php bin/console doctrine:schema:validate
