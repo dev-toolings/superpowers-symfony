@@ -304,6 +304,6 @@ public function testCreatesUser(): void
 6. **Don't over-mock**: Integration tests have value too
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=...
-- ./vendor/bin/phpunit
-- ./vendor/bin/pest --filter=...
+- ./vendor/bin/phpunit --filter=OrderServiceTest
+- ./vendor/bin/phpunit --testsuite=Unit
+- ./vendor/bin/phpunit --list-tests

@@ -324,6 +324,6 @@ jobs:
 6. **Clean up screenshots**: delete any PNGs produced; never commit them.
 
 ## Validation commands
-- vendor/bin/bdi detect drivers
+- ./vendor/bin/phpunit tests/E2E --filter=testHomePageLoads
 - ./vendor/bin/phpunit tests/E2E
-- PANTHER_NO_HEADLESS=1 bin/phpunit --debug
+- PANTHER_NO_HEADLESS=1 ./vendor/bin/phpunit tests/E2E --debug

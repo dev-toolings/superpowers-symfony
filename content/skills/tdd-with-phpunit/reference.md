@@ -204,6 +204,6 @@ public function it_rejects_invalid_submission(): void
 - Invalid form/HTTP cases assert 422 via `assertResponseIsUnprocessable()`.
 
 ## Validation commands
-- ./vendor/bin/phpunit --filter=...
-- ./vendor/bin/phpunit
-- ./vendor/bin/pest --filter=...
+- ./vendor/bin/phpunit --filter=PriceCalculatorTest
+- ./vendor/bin/phpunit --testsuite=Project
+- ./vendor/bin/phpunit --list-tests
