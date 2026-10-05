@@ -304,10 +304,27 @@ final class UserContextBuilder implements SerializerContextBuilderInterface
 
 ## JWT Authentication
 
+The `jwt` authenticator is not part of Symfony: it comes from
+`lexik/jwt-authentication-bundle`. Install it and generate the key pair first:
+
+```bash
+composer require lexik/jwt-authentication-bundle
+php bin/console lexik:jwt:generate-keypair
+```
+
+The `login` firewall issues the token, the `api` firewall checks it:
+
 ```yaml
 # config/packages/security.yaml
 security:
     firewalls:
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
             pattern: ^/api
             stateless: true
@@ -318,6 +335,9 @@ security:
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 ```
+
+Without the bundle, Symfony's native `access_token` authenticator (with your
+own `AccessTokenHandlerInterface`) covers opaque or OIDC tokens.
 
 ## Rate Limiting
 

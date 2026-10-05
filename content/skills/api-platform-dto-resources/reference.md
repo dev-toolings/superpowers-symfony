@@ -113,6 +113,10 @@ final readonly class DiscountBookProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Book
     {
+        // v4: ReadProvider stores the loaded object in `read_data` before the
+        // input (DiscountBook) replaces `data`. It is only set when the
+        // operation reads, which a POST does when it has URI variables ({id}).
+        // v3.4 has no `read_data`: load the object from $uriVariables['id'].
         $entity = $context['request']->attributes->get('read_data');
         $entity->price = (int) ($entity->price * (1 - $data->percentage / 100));
 
