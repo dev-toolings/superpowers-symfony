@@ -7,21 +7,6 @@ const ROOT = path.resolve(__dirname, '..');
 const SKILLS = path.join(ROOT, 'content', 'skills');
 const requiredSections = ['## Use when', '## Default workflow', '## Guardrails', '## Output contract', '## References'];
 
-/**
- * Skills that still share a templated body with others (#17). A shared body
- * among these only warns; a duplicate involving any other skill fails, so a
- * new skill copied from a template cannot slip in. Remove ids as their body
- * is rewritten, and drop the set once it is empty.
- */
-const KNOWN_SHARED = new Set([
-  'api-platform-dto-resources', 'api-platform-filters', 'api-platform-resources', 'api-platform-security',
-  'api-platform-serialization', 'api-platform-state-providers', 'api-platform-tests', 'api-platform-versioning',
-  'e2e-panther-playwright', 'functional-tests', 'tdd-with-pest', 'tdd-with-phpunit', 'test-doubles-mocking',
-  'messenger-retry-failures', 'symfony-messenger', 'symfony-scheduler',
-  'doctrine-fetch-modes', 'doctrine-migrations', 'doctrine-relations',
-  'brainstorming', 'runner-selection', 'using-symfony-superpowers',
-]);
-
 let failed = false;
 const byBody = new Map<string, string[]>();
 
@@ -56,12 +41,8 @@ for (const entry of fs.readdirSync(SKILLS, { withFileTypes: true })) {
 
 for (const ids of byBody.values()) {
   if (ids.length < 2) continue;
-  if (ids.every((id) => KNOWN_SHARED.has(id))) {
-    console.warn(`[shared-body] ${ids.join(', ')}: same Use when / Default workflow (known, #17)`);
-  } else {
-    console.error(`[duplicate-body] ${ids.join(', ')}: same Use when / Default workflow`);
-    failed = true;
-  }
+  console.error(`[duplicate-body] ${ids.join(', ')}: same Use when / Default workflow`);
+  failed = true;
 }
 
 if (failed) {
