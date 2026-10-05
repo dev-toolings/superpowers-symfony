@@ -155,7 +155,26 @@ function validateClaudeCode(p: Pivot): void {
     if (!value) continue;
     for (const rel of Array.isArray(value) ? value : [value]) {
       if (String(rel).includes('..')) err('.claude-plugin/plugin.json', `${key}: ".." is not allowed`);
-      if (!existsSync(join(ROOT, String(rel)))) err('.claude-plugin/plugin.json', `${key}: "${rel}" does not exist`);
+      const abs = join(ROOT, String(rel));
+      if (!existsSync(abs)) { err('.claude-plugin/plugin.json', `${key}: "${rel}" does not exist`); continue; }
+      // Each field has its own rule, and existence alone let 0.2.0 ship a
+      // manifest Claude Code refused to install: agents take .md files only,
+      // skills take directories only.
+      if (key === 'agents' && !(statSync(abs).isFile() && abs.endsWith('.md'))) {
+        err('.claude-plugin/plugin.json', `agents: "${rel}" must be an .md file, directories are rejected`);
+      }
+      if (key === 'skills' && !statSync(abs).isDirectory()) {
+        err('.claude-plugin/plugin.json', `skills: "${rel}" must be a directory`);
+      }
+      if (key === 'hooks' && typeof rel === 'string' && abs === join(ROOT, 'hooks', 'hooks.json')) {
+        err('.claude-plugin/plugin.json', `hooks: "${rel}" is loaded by default, declaring it loads it twice`);
+      }
+    }
+  }
+  if (Array.isArray(json.agents)) {
+    const listed = new Set(json.agents.map((rel: string) => join(ROOT, rel)));
+    for (const a of p.agents) {
+      if (!listed.has(a.sourcePath)) err('.claude-plugin/plugin.json', `agents: content/agents/${a.id}.md is not listed, it would not ship`);
     }
   }
 

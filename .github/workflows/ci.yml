@@ -46,16 +46,17 @@ jobs:
   plugin-validate:
     name: Claude Code packaging
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
 
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Blocking on purpose: a swallowed failure here let 0.2.0 ship a manifest
+      # that could not be installed.
       - name: Validate the plugin manifest
-        run: |
-          npx --yes @anthropic-ai/claude-code plugin validate . || {
-            echo "::warning::claude plugin validate unavailable or failed; the manifest is also checked by bun run validate"
-            exit 0
-          }
+        run: bunx @anthropic-ai/claude-code plugin validate .
 
   links:
     name: Markdown links
