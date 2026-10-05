@@ -333,6 +333,6 @@ class SchedulerMonitoringSubscriber implements EventSubscriberInterface
 6. **Timezone awareness**: Be explicit about timezones
 
 ## Validation commands
-- php bin/console messenger:consume --limit=1
-- php bin/console messenger:failed:show
-- ./vendor/bin/phpunit --filter=Messenger
+- php bin/console debug:scheduler
+- php bin/console debug:messenger
+- ./vendor/bin/phpunit --filter=Schedule
